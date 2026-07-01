@@ -119,21 +119,12 @@ Contributions are welcome! If you want to refine the topic modeling keywords or 
 
 ---
 
-*Created by [Your Name] | University of Ruhuna*
+*Created by Teshan G.H.P | University of Ruhuna*
 
 ---
 
-### How to finalize:
 
-1. Copy the text above.
-2. Paste it into your `README.md` file in your project root.
-3. Commit and push:
-```powershell
-git add README.md
-git commit -m "docs: update readme with new multi-label features"
-git push origin main
 
-```
 
 
 
