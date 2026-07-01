@@ -1,6 +1,4 @@
-This README is now fully updated to reflect your new **28-label emotion model**, the **multi-label inference logic**, and the **enhanced UI components**. It is ready to be saved as `README.md` and pushed to your repository.
 
----
 
 # YouTube Comment Sentiment & Emotion Analyzer
 
