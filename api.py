@@ -1,7 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from transformers import pipeline
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
+import torch.nn.functional as F
 import mlflow
 import pandas as pd
 from datetime import datetime
@@ -25,33 +27,114 @@ app.add_middleware(
 mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("youtube-sentiment-analyser")
 
+# ── model paths ────────────────────────────────────────────────────────
+SENTIMENT_MODEL_PATH = "cardiffnlp/twitter-roberta-base-sentiment-latest"
+EMOTION_MODEL_PATH   = "./fine-tuned-emotion-model"
+
+# Full 28-label GoEmotions set — must match training order exactly
+EMOTION_LABELS = [
+    "admiration", "amusement", "anger", "annoyance", "approval",
+    "caring", "confusion", "curiosity", "desire", "disappointment",
+    "disapproval", "disgust", "embarrassment", "excitement", "fear",
+    "gratitude", "grief", "joy", "love", "nervousness", "optimism",
+    "pride", "realization", "relief", "remorse", "sadness", "surprise",
+    "neutral",
+]
+
+# Threshold: probability above this → emotion is "present" on the comment.
+# Lower = more emotions detected per comment, higher = stricter/fewer.
+EMOTION_THRESHOLD = 0.3
+
 class AnalysisRequest(BaseModel):
     url: str
     max_comments: int = 100
 
-sentiment_model = None
-emotion_model   = None
+# Global model objects — loaded once at startup
+sentiment_pipeline = None
+emotion_tokenizer  = None
+emotion_model      = None
+device             = None
 
 def load_models():
-    global sentiment_model, emotion_model
-    print("Loading models...")
-    sentiment_model = pipeline(
+    global sentiment_pipeline, emotion_tokenizer, emotion_model, device
+    from transformers import pipeline
+
+    device_id = 0 if torch.cuda.is_available() else -1
+    device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
+
+    print("Loading sentiment model...")
+    sentiment_pipeline = pipeline(
         "sentiment-analysis",
-        model="cardiffnlp/twitter-roberta-base-sentiment-latest",
-        truncation=True, max_length=512
+        model=SENTIMENT_MODEL_PATH,
+        truncation=True, max_length=512,
+        device=device_id,
     )
-    emotion_model = pipeline(
-        "text-classification",
-        model="j-hartmann/emotion-english-distilroberta-base",
-        truncation=True, max_length=512
-    )
+
+    print("Loading fine-tuned emotion model...")
+    emotion_tokenizer = AutoTokenizer.from_pretrained(EMOTION_MODEL_PATH)
+    emotion_model     = AutoModelForSequenceClassification.from_pretrained(
+        EMOTION_MODEL_PATH
+    ).to(device)
+    emotion_model.eval()
     print("✓ Models loaded!")
 
 @app.on_event("startup")
 async def startup_event():
     load_models()
 
-# ── helpers ────────────────────────────────────────────────────
+
+# ── emotion inference ──────────────────────────────────────────────────
+
+def predict_emotions_batch(texts: list[str], batch_size: int = 32) -> list[list[str]]:
+    """
+    Runs the fine-tuned multi-label emotion model on a list of texts.
+    Returns a list of lists — each inner list contains the emotion labels
+    that scored above EMOTION_THRESHOLD for that comment.
+    e.g. ["thank you so much!"] → [["gratitude", "joy"]]
+    """
+    all_results = []
+
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i: i + batch_size]
+        encoded = emotion_tokenizer(
+            batch,
+            truncation=True,
+            max_length=128,
+            padding=True,
+            return_tensors="pt",
+        ).to(device)
+
+        with torch.no_grad():
+            logits = emotion_model(**encoded).logits
+
+        probs = torch.sigmoid(logits).cpu().numpy()
+
+        for row in probs:
+            detected = [
+                EMOTION_LABELS[j]
+                for j, score in enumerate(row)
+                if score >= EMOTION_THRESHOLD
+            ]
+            # if nothing clears the threshold, fall back to highest-scoring label
+            if not detected:
+                detected = [EMOTION_LABELS[int(row.argmax())]]
+            all_results.append(detected)
+
+    return all_results
+
+
+def emotion_counts_from_lists(emotion_lists: list[list[str]]) -> dict:
+    """Counts how many comments contain each emotion across all comments."""
+    counts = {e: 0 for e in EMOTION_LABELS}
+    for emo_list in emotion_lists:
+        for emo in emo_list:
+            if emo in counts:
+                counts[emo] += 1
+    return counts
+
+
+# ── helpers ────────────────────────────────────────────────────────────
 
 def get_video_id(url: str) -> str:
     if "v=" in url:
@@ -83,7 +166,8 @@ def get_video_info(video_id: str) -> dict:
         print(f"Video info error: {e}")
         return {}
 
-# ── mixed sentiment ────────────────────────────────────────────
+
+# ── mixed sentiment ────────────────────────────────────────────────────
 
 CONTRAST_WORDS = [
     " but ", " however ", " although ", " though ",
@@ -119,7 +203,8 @@ def detect_mixed_sentiment(text: str, sent_pipeline) -> dict:
         "part2_score":     round(r2["score"], 3),
     }
 
-# ── topic modelling ────────────────────────────────────────────
+
+# ── topic modelling ────────────────────────────────────────────────────
 
 def detect_topics(comments: list) -> list:
     topic_rules = {
@@ -136,12 +221,12 @@ def detect_topics(comments: list) -> list:
     topic_counts   = {t: 0 for t in topic_rules}
     topic_examples = {t: [] for t in topic_rules}
     for c in comments:
-        text_lower = c["text"].lower()
+        text_lower = str(c.get("text", "")).lower()
         for topic, keywords in topic_rules.items():
             if any(kw in text_lower for kw in keywords):
                 topic_counts[topic] += 1
                 if len(topic_examples[topic]) < 2:
-                    topic_examples[topic].append(c["text"][:80])
+                    topic_examples[topic].append(str(c.get("text", ""))[:80])
     results = [
         {
             "topic":    topic,
@@ -153,7 +238,8 @@ def detect_topics(comments: list) -> list:
     ]
     return sorted(results, key=lambda x: x["count"], reverse=True)
 
-# ── suggestions ────────────────────────────────────────────────
+
+# ── suggestions ────────────────────────────────────────────────────────
 
 def generate_suggestions(comments: list, sentiment_counts: dict, emotion_counts: dict) -> list:
     negative = [c["text"] for c in comments if c["sentiment"] == "negative"][:20]
@@ -161,7 +247,10 @@ def generate_suggestions(comments: list, sentiment_counts: dict, emotion_counts:
     total    = max(len(comments), 1)
     neg_pct  = round(sentiment_counts["negative"] / total * 100)
     pos_pct  = round(sentiment_counts["positive"] / total * 100)
-    top_emo  = max(emotion_counts, key=emotion_counts.get)
+
+    nonzero  = {k: v for k, v in emotion_counts.items() if v > 0}
+    top_emo  = max(nonzero, key=nonzero.get) if nonzero else "neutral"
+
     neg_text = " ".join(negative).lower()
     pos_text = " ".join(positive).lower()
 
@@ -176,31 +265,38 @@ def generate_suggestions(comments: list, sentiment_counts: dict, emotion_counts:
     if pos_pct >= 40:
         suggestions.append({"type": "success", "title": "Strong positive engagement",
             "detail": f"{pos_pct}% positive comments. Consider making more content in this topic area."})
-    if top_emo == "anger":
-        suggestions.append({"type": "warning", "title": "Anger is the dominant emotion",
-            "detail": "Many viewers expressed anger. Check if content was controversial or if the title/thumbnail set wrong expectations."})
-    if top_emo == "joy":
-        suggestions.append({"type": "success", "title": "Joy is the dominant emotion",
-            "detail": "Viewers are genuinely happy with this content. Replicate this style."})
-    if top_emo == "surprise":
-        suggestions.append({"type": "info", "title": "Viewers were surprised",
-            "detail": "Surprise is the top emotion — your content subverted expectations. Use this for higher engagement."})
-    if top_emo == "sadness":
-        suggestions.append({"type": "info", "title": "Sadness is the dominant emotion",
-            "detail": "Viewers felt emotionally moved. Consider leaning into emotional storytelling."})
+
+    emotion_tips = {
+        "anger":      ("warning", "Anger is a dominant emotion", "Many viewers expressed anger. Check if content was controversial or if the title/thumbnail set wrong expectations."),
+        "joy":        ("success", "Joy is a dominant emotion", "Viewers are genuinely happy with this content. Replicate this style."),
+        "surprise":   ("info",    "Viewers were surprised", "Surprise is prominent — your content subverted expectations. Use this for higher engagement."),
+        "sadness":    ("info",    "Sadness is a dominant emotion", "Viewers felt emotionally moved. Consider leaning into emotional storytelling."),
+        "gratitude":  ("success", "Gratitude is a dominant emotion", "Viewers feel genuinely thankful. This kind of video earns long-term loyalty."),
+        "excitement": ("success", "Excitement is a dominant emotion", "Viewers are highly anticipatory. Follow up quickly — momentum like this fades."),
+        "admiration": ("success", "Admiration is a dominant emotion", "Viewers respect the skill or effort shown. Highlight your process in future videos."),
+        "disgust":    ("warning", "Disgust is a dominant emotion", "Something in this video bothered viewers strongly. Review comments to identify the specific cause."),
+        "fear":       ("warning", "Fear is a dominant emotion", "Viewers felt unsettled. Consider whether the content tone matched audience expectations."),
+        "annoyance":  ("warning", "Annoyance is a dominant emotion", "Viewers found something irritating. Common causes: repetitive content, slow pacing, or misleading thumbnails."),
+        "love":       ("success", "Love is a dominant emotion", "Viewers have a deep affection for this content. You've built genuine connection with your audience."),
+        "optimism":   ("success", "Optimism is a dominant emotion", "Viewers feel hopeful after watching. This is rare and valuable — keep the positive framing."),
+    }
+    if top_emo in emotion_tips:
+        t, title, detail = emotion_tips[top_emo]
+        suggestions.append({"type": t, "title": title, "detail": detail})
+
     if any(w in neg_text for w in ["long", "slow", "boring", "skip", "too long"]):
         suggestions.append({"type": "warning", "title": "Pacing feedback detected",
             "detail": "Negative comments mention length or pacing. Consider tighter editing and chapter markers."})
     if any(w in neg_text for w in ["audio", "sound", "hear", "mic", "volume"]):
         suggestions.append({"type": "warning", "title": "Audio quality complaints",
             "detail": "Viewers are flagging audio issues. Better microphone or post-processing could significantly help."})
-    if any(w in neg_text for w in ["explain", "confus", "understand", "unclear", "hard to follow"]):
+    if any(w in neg_text for w in ["explain", "confus", "understand", "unclear"]):
         suggestions.append({"type": "warning", "title": "Clarity issues reported",
             "detail": "Viewers find the content hard to follow. Add examples, summaries, or chapter markers."})
     if any(w in neg_text for w in ["clickbait", "mislead", "thumbnail", "title"]):
         suggestions.append({"type": "warning", "title": "Thumbnail / title mismatch",
             "detail": "Viewers feel the thumbnail or title was misleading. Make sure content delivers on the promise."})
-    if any(w in pos_text for w in ["part 2", "more", "next", "series", "continue", "follow up"]):
+    if any(w in pos_text for w in ["part 2", "more", "next", "series", "continue"]):
         suggestions.append({"type": "info", "title": "Viewers want more content",
             "detail": "Positive comments ask for follow-up. A part 2 or series would perform well."})
     if not suggestions:
@@ -208,11 +304,12 @@ def generate_suggestions(comments: list, sentiment_counts: dict, emotion_counts:
             "detail": "Comments are mostly neutral. Try ending videos with a direct question to boost engagement."})
     return suggestions
 
-# ── routes ─────────────────────────────────────────────────────
+
+# ── routes ─────────────────────────────────────────────────────────────
 
 @app.get("/")
 def root():
-    return {"status": "running"}
+    return {"status": "running", "emotion_model": EMOTION_MODEL_PATH}
 
 @app.get("/last-analysis")
 def last_analysis():
@@ -223,9 +320,16 @@ def last_analysis():
     if df.empty:
         return {"comments": [], "video_info": {}, "sentiment_counts": {}, "emotion_counts": {}, "suggestions": [], "topics": [], "total": 0}
 
+    # handle old CSVs that stored single emotion string vs new list format
     for col in ["is_mixed", "part1_text", "part1_sentiment", "part2_text", "part2_sentiment"]:
         if col not in df.columns:
             df[col] = False if col == "is_mixed" else ""
+    if "emotions" not in df.columns:
+        df["emotions"] = df.get("emotion", "neutral").apply(lambda x: [str(x)] if pd.notna(x) else ["neutral"])
+    else:
+        df["emotions"] = df["emotions"].apply(
+            lambda x: x.split(",") if isinstance(x, str) else ["neutral"]
+        )
 
     comments = df.to_dict(orient="records")
     sentiment_counts = {
@@ -233,7 +337,12 @@ def last_analysis():
         "neutral":  int((df["sentiment"] == "neutral").sum()),
         "negative": int((df["sentiment"] == "negative").sum()),
     }
-    emotion_counts = {e: int((df["emotion"] == e).sum()) for e in ["joy","neutral","surprise","anger","sadness","fear","disgust"]}
+    # build emotion counts from the list column
+    all_emotion_lists = [
+        (row["emotions"] if isinstance(row["emotions"], list) else [row["emotions"]])
+        for row in comments
+    ]
+    emotion_counts = emotion_counts_from_lists(all_emotion_lists)
     return {
         "total": len(df), "video_info": {}, "comments": comments,
         "sentiment_counts": sentiment_counts, "emotion_counts": emotion_counts,
@@ -250,18 +359,21 @@ async def analyse(request: AnalysisRequest):
 
         video_id   = get_video_id(request.url)
         video_info = get_video_info(video_id)
+        texts      = df["text"].astype(str).tolist()
 
-        texts           = df["text"].astype(str).tolist()
-        sent_results    = sentiment_model(texts, batch_size=16)
-        emotion_results = emotion_model(texts, batch_size=16)
-
+        # sentiment (still single-label — positive/neutral/negative)
+        sent_results    = sentiment_pipeline(texts, batch_size=16)
         df["sentiment"]       = [r["label"] for r in sent_results]
         df["sentiment_score"] = [round(r["score"], 3) for r in sent_results]
-        df["emotion"]         = [r["label"] for r in emotion_results]
-        df["emotion_score"]   = [round(r["score"], 3) for r in emotion_results]
+
+        # emotion (now multi-label — list of emotions per comment)
+        emotion_lists   = predict_emotions_batch(texts)
+        df["emotions"]  = [",".join(emo_list) for emo_list in emotion_lists]
+        # keep a primary emotion for backwards-compat display (highest-confidence one = first)
+        df["emotion"]   = [emo_list[0] for emo_list in emotion_lists]
 
         # mixed sentiment detection
-        mixed_data = [detect_mixed_sentiment(t, sentiment_model) for t in texts]
+        mixed_data = [detect_mixed_sentiment(t, sentiment_pipeline) for t in texts]
         df["is_mixed"]        = [m["is_mixed"]                for m in mixed_data]
         df["part1_text"]      = [m.get("part1_text", "")      for m in mixed_data]
         df["part1_sentiment"] = [m.get("part1_sentiment", "") for m in mixed_data]
@@ -274,8 +386,12 @@ async def analyse(request: AnalysisRequest):
             "neutral":  int((df["sentiment"] == "neutral").sum()),
             "negative": int((df["sentiment"] == "negative").sum()),
         }
-        emotion_counts = {e: int((df["emotion"] == e).sum()) for e in ["joy","neutral","surprise","anger","sadness","fear","disgust"]}
+        emotion_counts = emotion_counts_from_lists(emotion_lists)
         comments    = df.to_dict(orient="records")
+        # attach the parsed emotion list back onto each comment dict for the frontend
+        for i, c in enumerate(comments):
+            c["emotions"] = emotion_lists[i]
+
         suggestions = generate_suggestions(comments, sentiment_counts, emotion_counts)
         topics      = detect_topics(comments)
 
@@ -283,13 +399,15 @@ async def analyse(request: AnalysisRequest):
             mlflow.log_param("url",            request.url)
             mlflow.log_param("video_title",    video_info.get("title", "unknown"))
             mlflow.log_param("total_comments", total)
+            mlflow.log_param("emotion_model",  EMOTION_MODEL_PATH)
             mlflow.log_metric("positive_pct",  round(sentiment_counts["positive"] / total * 100, 2))
             mlflow.log_metric("negative_pct",  round(sentiment_counts["negative"] / total * 100, 2))
             mlflow.log_metric("neutral_pct",   round(sentiment_counts["neutral"]  / total * 100, 2))
             mlflow.log_metric("avg_sentiment_score", round(df["sentiment_score"].mean(), 3))
             mlflow.log_metric("mixed_count",   int(df["is_mixed"].sum()))
             for emo, cnt in emotion_counts.items():
-                mlflow.log_metric(f"emotion_{emo}", cnt)
+                if cnt > 0:
+                    mlflow.log_metric(f"emotion_{emo}", cnt)
 
         df.to_csv("comments_analysed.csv", index=False)
 

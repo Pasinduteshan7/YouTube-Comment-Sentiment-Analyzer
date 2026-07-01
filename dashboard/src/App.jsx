@@ -6,9 +6,42 @@ import {
 } from "recharts";
 
 const API = "http://127.0.0.1:8000";
+
 const SENT_COLORS = { positive: "#1D9E75", neutral: "#888780", negative: "#E24B4A" };
-const EMO_COLORS  = { joy: "#BA7517", neutral: "#888780", surprise: "#378ADD", anger: "#E24B4A", sadness: "#534AB7", fear: "#7F77DD", disgust: "#D85A30" };
-const SUG_STYLE   = {
+
+// Full 28-emotion color palette
+const EMO_COLORS = {
+  admiration:    "#7F77DD",
+  amusement:     "#BA7517",
+  anger:         "#E24B4A",
+  annoyance:     "#D85A30",
+  approval:      "#1D9E75",
+  caring:        "#D4537E",
+  confusion:     "#888780",
+  curiosity:     "#378ADD",
+  desire:        "#C0609A",
+  disappointment:"#534AB7",
+  disapproval:   "#A32D2D",
+  disgust:       "#8B4513",
+  embarrassment: "#CC7722",
+  excitement:    "#E8A020",
+  fear:          "#6B52A8",
+  gratitude:     "#2E8B57",
+  grief:         "#4A4A8A",
+  joy:           "#BA7517",
+  love:          "#D4537E",
+  nervousness:   "#7B6B8A",
+  optimism:      "#3A9E6A",
+  pride:         "#9370DB",
+  realization:   "#4682B4",
+  relief:        "#5BA85B",
+  remorse:       "#8B6969",
+  sadness:       "#4169E1",
+  surprise:      "#20B2AA",
+  neutral:       "#888780",
+};
+
+const SUG_STYLE = {
   success: { bg: "#E1F5EE", color: "#085041", border: "#1D9E75" },
   warning: { bg: "#FAECE7", color: "#712B13", border: "#D85A30" },
   info:    { bg: "#E6F1FB", color: "#0C447C", border: "#378ADD" },
@@ -19,6 +52,32 @@ function formatNum(n) {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
   if (n >= 1_000)     return (n / 1_000).toFixed(1) + "K";
   return String(n);
+}
+
+function EmotionBadges({ emotions }) {
+  // emotions can be an array (fresh analysis) or a comma-separated string (from CSV)
+  const list = Array.isArray(emotions)
+    ? emotions
+    : typeof emotions === "string"
+      ? emotions.split(",").map(e => e.trim()).filter(Boolean)
+      : [];
+
+  if (list.length === 0) return <span style={{ color: "#aaa", fontSize: 11 }}>—</span>;
+
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 3, justifyContent: "center" }}>
+      {list.map((emo, i) => (
+        <span key={i} style={{
+          padding: "2px 6px", borderRadius: 6, fontSize: 10, fontWeight: 500,
+          background: (EMO_COLORS[emo] || "#888") + "22",
+          color: EMO_COLORS[emo] || "#666",
+          border: `0.5px solid ${EMO_COLORS[emo] || "#888"}44`,
+        }}>
+          {emo}
+        </span>
+      ))}
+    </div>
+  );
 }
 
 function SentimentBadge({ c }) {
@@ -45,14 +104,15 @@ function SentimentBadge({ c }) {
 }
 
 export default function App() {
-  const [url, setUrl]             = useState("");
-  const [max, setMax]             = useState(100);
-  const [loading, setLoading]     = useState(false);
-  const [error, setError]         = useState("");
-  const [data, setData]           = useState(null);
-  const [filter, setFilter]       = useState("all");
-  const [search, setSearch]       = useState("");
-  const [topicOpen, setTopicOpen] = useState(false);
+  const [url, setUrl]               = useState("");
+  const [max, setMax]               = useState(100);
+  const [loading, setLoading]       = useState(false);
+  const [error, setError]           = useState("");
+  const [data, setData]             = useState(null);
+  const [filter, setFilter]         = useState("all");
+  const [search, setSearch]         = useState("");
+  const [topicOpen, setTopicOpen]   = useState(false);
+  const [showAllEmo, setShowAllEmo] = useState(false);
 
   useEffect(() => {
     axios.get(`${API}/last-analysis`)
@@ -78,12 +138,14 @@ export default function App() {
     { name: "Negative", value: data.sentiment_counts?.negative || 0 },
   ] : [];
 
-  const emoData = data
+  const allEmoData = data
     ? Object.entries(data.emotion_counts || {})
         .map(([name, value]) => ({ name, value }))
         .filter(e => e.value > 0)
         .sort((a, b) => b.value - a.value)
     : [];
+
+  const emoData = showAllEmo ? allEmoData : allEmoData.slice(0, 10);
 
   const isMixed = c => c.is_mixed === true || c.is_mixed === "True";
 
@@ -102,11 +164,11 @@ export default function App() {
   const mixedCount = data ? (data.comments || []).filter(isMixed).length : 0;
 
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", maxWidth: 960, margin: "0 auto", padding: "2rem 1rem", color: "#1a1a1a" }}>
+    <div style={{ fontFamily: "system-ui, sans-serif", maxWidth: 980, margin: "0 auto", padding: "2rem 1rem", color: "#1a1a1a" }}>
 
       <h1 style={{ fontSize: 22, fontWeight: 600, marginBottom: 4 }}>YouTube Comment Sentiment Analyser</h1>
       <p style={{ color: "#888", fontSize: 14, marginBottom: 24 }}>
-        {total > 0 ? `${total} comments analysed` : "Paste a YouTube URL below to get started"}
+        {total > 0 ? `${total} comments analysed · 28-emotion fine-tuned model` : "Paste a YouTube URL below to get started"}
       </p>
 
       {/* URL input */}
@@ -141,13 +203,13 @@ export default function App() {
       {loading && (
         <div style={{ textAlign: "center", padding: "4rem", color: "#888" }}>
           <div style={{ fontSize: 14, marginBottom: 6 }}>Fetching comments and running AI models…</div>
-          <div style={{ fontSize: 12 }}>This takes about 20–30 seconds</div>
+          <div style={{ fontSize: 12 }}>This takes about 20–40 seconds</div>
         </div>
       )}
 
       {data && !loading && (
         <>
-          {/* Video info card */}
+          {/* Video info */}
           {vi.title && (
             <div style={{ background: "#fff", border: "0.5px solid #e0e0e0", borderRadius: 12, padding: "1.25rem", marginBottom: 20, display: "flex", gap: 16, alignItems: "flex-start" }}>
               {vi.thumbnail && (
@@ -174,7 +236,7 @@ export default function App() {
             </div>
           )}
 
-          {/* Sentiment cards — 4 including mixed */}
+          {/* Sentiment cards */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 20 }}>
             {[
               { label: "Positive", count: data.sentiment_counts.positive, color: "#1D9E75" },
@@ -207,11 +269,19 @@ export default function App() {
             </div>
 
             <div style={{ background: "#fff", border: "0.5px solid #e0e0e0", borderRadius: 12, padding: "1rem" }}>
-              <p style={{ fontWeight: 500, fontSize: 14, marginBottom: 12 }}>Emotion breakdown</p>
-              <ResponsiveContainer width="100%" height={200}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                <p style={{ fontWeight: 500, fontSize: 14, margin: 0 }}>Emotion breakdown</p>
+                {allEmoData.length > 10 && (
+                  <button onClick={() => setShowAllEmo(o => !o)}
+                    style={{ fontSize: 11, color: "#888", background: "none", border: "0.5px solid #ddd", borderRadius: 6, padding: "2px 8px", cursor: "pointer" }}>
+                    {showAllEmo ? "show top 10" : `show all ${allEmoData.length}`}
+                  </button>
+                )}
+              </div>
+              <ResponsiveContainer width="100%" height={showAllEmo ? allEmoData.length * 24 : 260}>
                 <BarChart data={emoData} layout="vertical" margin={{ left: 10 }}>
                   <XAxis type="number" tick={{ fontSize: 11 }} />
-                  <YAxis type="category" dataKey="name" tick={{ fontSize: 12 }} width={60} />
+                  <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={80} />
                   <Tooltip />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                     {emoData.map(e => <Cell key={e.name} fill={EMO_COLORS[e.name] || "#888"} />)}
@@ -265,7 +335,7 @@ export default function App() {
             </div>
           )}
 
-          {/* Filters + search — includes mixed */}
+          {/* Filters + search */}
           <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap", alignItems: "center" }}>
             {["all", "positive", "neutral", "negative", "mixed"].map(f => (
               <button key={f} onClick={() => setFilter(f)} style={{
@@ -283,22 +353,20 @@ export default function App() {
 
           {/* Comment table */}
           <div style={{ background: "#fff", border: "0.5px solid #e0e0e0", borderRadius: 12, overflow: "hidden" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 110px 110px 60px", background: "#f5f5f3", padding: "8px 14px", fontSize: 12, fontWeight: 500, color: "#666" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 100px 160px 50px", background: "#f5f5f3", padding: "8px 14px", fontSize: 12, fontWeight: 500, color: "#666" }}>
               <span>Comment</span>
               <span style={{ textAlign: "center" }}>Sentiment</span>
-              <span style={{ textAlign: "center" }}>Emotion</span>
+              <span style={{ textAlign: "center" }}>Emotions</span>
               <span style={{ textAlign: "center" }}>Likes</span>
             </div>
             {visible.slice(0, 50).map((c, i) => (
-              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 110px 110px 60px", padding: "10px 14px", borderTop: "0.5px solid #f0f0f0", fontSize: 13, alignItems: "center" }}>
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 100px 160px 50px", padding: "10px 14px", borderTop: "0.5px solid #f0f0f0", fontSize: 13, alignItems: "center" }}>
                 <span style={{ color: "#333", lineHeight: 1.4 }}>{c.text}</span>
                 <span style={{ textAlign: "center" }}>
                   <SentimentBadge c={c} />
                 </span>
                 <span style={{ textAlign: "center" }}>
-                  <span style={{ padding: "2px 8px", borderRadius: 8, fontSize: 11, fontWeight: 500, background: "#F1EFE8", color: "#444" }}>
-                    {c.emotion}
-                  </span>
+                  <EmotionBadges emotions={c.emotions} />
                 </span>
                 <span style={{ textAlign: "center", color: "#888", fontSize: 12 }}>{c.likes ?? "—"}</span>
               </div>
