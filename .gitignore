@@ -1,12 +1,32 @@
+# environment
 venv/
+.env
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-.Python
-.env
-*.egg-info/
-dist/
-build/
-node_modules/
-.DS_Store
+
+# model folders — too large for GitHub (500MB+ each)
+fine-tuned-emotion-model/
+fine-tuned-emotion-model-multilingual/
+training-checkpoints/
+
+# GoEmotions dataset CSVs — too large (~500MB combined)
+goemotions_train.csv
+goemotions_val.csv
+goemotions_test.csv
+
+# MLflow tracking database
+mlflow.db
+mlruns/
+
+# generated data files
+comments.csv
+comments_analysed.csv
+labelling_sheet.csv
+
+# Windows/VS Code
+.vscode/
+Thumbs.db
+desktop.ini
+
+# duplicate folder (URL-encoded name)
+sentiment%20analyzer/
