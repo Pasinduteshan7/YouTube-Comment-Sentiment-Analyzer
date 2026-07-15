@@ -115,6 +115,12 @@ export default function App() {
   const [showAllEmo, setShowAllEmo] = useState(false);
   const [history, setHistory]       = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [channelUrl, setChannelUrl]         = useState("");
+  const [maxVideos, setMaxVideos]           = useState(5);
+  const [channelLoading, setChannelLoading] = useState(false);
+  const [channelData, setChannelData]       = useState(null);
+  const [channelError, setChannelError]     = useState("");
+  const [activeTab, setActiveTab]           = useState("single"); // "single" or "channel"
 
   useEffect(() => {
     axios.get(`${API}/last-analysis`)
@@ -135,6 +141,24 @@ export default function App() {
       setError(e?.response?.data?.detail || "Could not connect. Make sure backend is running: uvicorn api:app --reload");
     }
     setLoading(false);
+  }
+
+  async function analyseChannel() {
+    if (!channelUrl.trim()) return;
+    setChannelLoading(true);
+    setChannelError("");
+    setChannelData(null);
+    try {
+      const res = await axios.post(`${API}/analyse-channel`, {
+        url: channelUrl.trim(),
+        max_videos: maxVideos,
+        comments_per_video: 100,
+      });
+      setChannelData(res.data);
+    } catch (e) {
+      setChannelError(e?.response?.data?.detail || "Could not connect to backend.");
+    }
+    setChannelLoading(false);
   }
 
   const sentData = data ? [
@@ -176,7 +200,21 @@ export default function App() {
         {total > 0 ? `${total} comments analysed · 28-emotion fine-tuned model` : "Paste a YouTube URL below to get started"}
       </p>
 
+      <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+        {["single", "channel"].map(tab => (
+          <button key={tab} onClick={() => setActiveTab(tab)} style={{
+            padding: "6px 20px", borderRadius: 20, fontSize: 13, fontWeight: 500,
+            cursor: "pointer", border: "none",
+            background: activeTab === tab ? "#185FA5" : "#f0f0ee",
+            color: activeTab === tab ? "#fff" : "#555",
+          }}>
+            {tab === "single" ? "Single video" : "Channel / playlist"}
+          </button>
+        ))}
+      </div>
+
       {/* URL input */}
+      {activeTab === "single" && (
       <div style={{ background: "#f9f9f7", border: "1px solid #e0e0e0", borderRadius: 12, padding: "1.25rem", marginBottom: 24 }}>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <input
@@ -209,8 +247,41 @@ export default function App() {
         </div>
         {error && <p style={{ color: "#E24B4A", fontSize: 13, marginTop: 10, marginBottom: 0 }}>{error}</p>}
       </div>
+      )}
 
-      {showHistory && history.length > 0 && (
+      {activeTab === "channel" && (
+        <div style={{ background: "#f9f9f7", border: "1px solid #e0e0e0", borderRadius: 12, padding: "1.25rem", marginBottom: 24 }}>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <input
+              value={channelUrl}
+              onChange={e => setChannelUrl(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && analyseChannel()}
+              placeholder="https://www.youtube.com/@ChannelName or playlist URL"
+              disabled={channelLoading}
+              style={{ flex: 1, minWidth: 260, padding: "9px 13px", borderRadius: 8, border: "1px solid #ddd", fontSize: 14 }}
+            />
+            <select value={maxVideos} onChange={e => setMaxVideos(Number(e.target.value))} disabled={channelLoading}
+              style={{ padding: "9px 12px", borderRadius: 8, border: "1px solid #ddd", fontSize: 14 }}>
+              <option value={3}>Last 3 videos</option>
+              <option value={5}>Last 5 videos</option>
+              <option value={10}>Last 10 videos</option>
+            </select>
+            <button onClick={analyseChannel} disabled={channelLoading} style={{
+              padding: "9px 24px", borderRadius: 8, border: "none", fontSize: 14, fontWeight: 600,
+              cursor: channelLoading ? "not-allowed" : "pointer",
+              background: channelLoading ? "#ccc" : "#185FA5", color: "#fff",
+            }}>
+              {channelLoading ? "Scanning…" : "Scan channel"}
+            </button>
+          </div>
+          {channelError && <p style={{ color: "#E24B4A", fontSize: 13, marginTop: 10, marginBottom: 0 }}>{channelError}</p>}
+          <p style={{ fontSize: 12, color: "#888", marginTop: 8, marginBottom: 0 }}>
+            Scans the last N videos. Each video takes ~20 seconds — allow 2-3 minutes for 5 videos.
+          </p>
+        </div>
+      )}
+
+      {showHistory && history.length > 0 && activeTab === "single" && (
         <div style={{ background: "#f9f9f7", border: "1px solid #e0e0e0", borderRadius: 12, padding: "1.25rem", marginBottom: 24 }}>
           <p style={{ fontWeight: 500, fontSize: 14, marginBottom: 14 }}>Past analyses</p>
           <div style={{ display: "grid", gap: 8 }}>
@@ -235,14 +306,21 @@ export default function App() {
       )}
 
       {/* Loading */}
-      {loading && (
+      {activeTab === "single" && loading && (
         <div style={{ textAlign: "center", padding: "4rem", color: "#888" }}>
           <div style={{ fontSize: 14, marginBottom: 6 }}>Fetching comments and running AI models…</div>
           <div style={{ fontSize: 12 }}>This takes about 20–40 seconds</div>
         </div>
       )}
 
-      {data && !loading && (
+      {activeTab === "channel" && channelLoading && (
+        <div style={{ textAlign: "center", padding: "4rem", color: "#888" }}>
+          <div style={{ fontSize: 14, marginBottom: 6 }}>Scanning channel videos one by one…</div>
+          <div style={{ fontSize: 12 }}>Each video takes about 20-30 seconds. Please wait.</div>
+        </div>
+      )}
+
+      {activeTab === "single" && data && !loading && (
         <>
           {/* Video info */}
           {vi.title && (
@@ -453,6 +531,64 @@ export default function App() {
             )}
           </div>
         </>
+      )}
+
+      {activeTab === "channel" && channelData && !channelLoading && (
+        <div>
+          {/* Summary cards */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 20 }}>
+            {[
+              { label: "Videos analysed", val: channelData.total_videos, color: "#185FA5" },
+              { label: "Avg positive",    val: channelData.avg_positive_pct + "%", color: "#1D9E75" },
+              { label: "Avg negative",    val: channelData.avg_negative_pct + "%", color: "#E24B4A" },
+              { label: "Common profile",  val: channelData.most_common_profile, color: "#534AB7" },
+            ].map(m => (
+              <div key={m.label} style={{ background: "#f5f5f3", borderRadius: 10, padding: "1rem", textAlign: "center" }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: m.color }}>{m.val}</div>
+                <div style={{ fontSize: 11, color: "#888", marginTop: 4 }}>{m.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Highlight cards */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+            <div style={{ background: "#E1F5EE", borderRadius: 10, padding: "1rem", borderLeft: "3px solid #1D9E75" }}>
+              <div style={{ fontSize: 11, color: "#1D9E75", fontWeight: 500, marginBottom: 4 }}>Best received video</div>
+              <div style={{ fontSize: 13, color: "#085041" }}>{channelData.best_received_video}</div>
+            </div>
+            <div style={{ background: "#FAECE7", borderRadius: 10, padding: "1rem", borderLeft: "3px solid #D85A30" }}>
+              <div style={{ fontSize: 11, color: "#D85A30", fontWeight: 500, marginBottom: 4 }}>Most divisive video</div>
+              <div style={{ fontSize: 13, color: "#712B13" }}>{channelData.most_divisive_video}</div>
+            </div>
+          </div>
+
+          {/* Per-video cards */}
+          <div style={{ display: "grid", gap: 12 }}>
+            {channelData.videos.map((v, i) => (
+              <div key={i} style={{ background: "#fff", border: "0.5px solid #e0e0e0", borderRadius: 12, padding: "1.25rem", display: "flex", gap: 14, alignItems: "flex-start" }}>
+                {v.thumbnail && (
+                  <img src={v.thumbnail} alt="" style={{ width: 120, height: 68, borderRadius: 6, objectFit: "cover", flexShrink: 0 }} />
+                )}
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{v.title}</div>
+                  <div style={{ fontSize: 11, color: "#888", marginBottom: 8 }}>{v.published} · {v.total} comments analysed</div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                    <span style={{ fontSize: 11, background: "#E1F5EE", color: "#085041", padding: "2px 8px", borderRadius: 6, fontWeight: 500 }}>{v.positive_pct}% positive</span>
+                    <span style={{ fontSize: 11, background: "#FCEBEB", color: "#A32D2D", padding: "2px 8px", borderRadius: 6, fontWeight: 500 }}>{v.negative_pct}% negative</span>
+                    <span style={{ fontSize: 11, background: "#EDE8FB", color: "#3C3489", padding: "2px 8px", borderRadius: 6, fontWeight: 500 }}>{v.fingerprint.profile}</span>
+                    {v.top_emotions.slice(0, 3).map(([emo]) => (
+                      <span key={emo} style={{ fontSize: 10, background: (EMO_COLORS[emo] || "#888") + "22", color: EMO_COLORS[emo] || "#666", padding: "2px 6px", borderRadius: 6, border: `0.5px solid ${EMO_COLORS[emo] || "#888"}44` }}>{emo}</span>
+                    ))}
+                    <button onClick={() => { setUrl(v.url); setActiveTab("single"); }}
+                      style={{ marginLeft: "auto", fontSize: 11, padding: "3px 10px", borderRadius: 6, border: "0.5px solid #ddd", background: "none", cursor: "pointer", color: "#185FA5" }}>
+                      Full analysis
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

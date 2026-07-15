@@ -52,6 +52,11 @@ class AnalysisRequest(BaseModel):
     url: str
     max_comments: int = 100
 
+class ChannelAnalysisRequest(BaseModel):
+    url: str
+    max_videos: int = 5
+    comments_per_video: int = 100
+
 sentiment_pipeline = None
 emotion_tokenizer  = None
 emotion_model      = None
@@ -117,6 +122,66 @@ def emotion_counts_from_lists(emotion_lists: list) -> dict:
 
 
 # ── helpers ────────────────────────────────────────────────────────────
+
+def fetch_channel_videos(channel_url: str, max_videos: int = 10) -> list:
+    """
+    Given a channel URL or playlist URL, returns a list of dicts:
+    [{"video_id": "...", "title": "...", "thumbnail": "...", "published": "..."}]
+    """
+    api_key = os.getenv("YOUTUBE_API_KEY")
+    youtube = build("youtube", "v3", developerKey=api_key)
+
+    # resolve channel URL to uploads playlist ID
+    if "@" in channel_url or "channel/" in channel_url:
+        # extract channel handle or ID
+        if "@" in channel_url:
+            handle = channel_url.split("@")[-1].split("/")[0].split("?")[0]
+            res = youtube.search().list(
+                part="snippet", q=handle, type="channel", maxResults=1
+            ).execute()
+            if not res.get("items"):
+                return []
+            channel_id = res["items"][0]["snippet"]["channelId"]
+        else:
+            channel_id = channel_url.split("channel/")[-1].split("/")[0].split("?")[0]
+
+        channel_res = youtube.channels().list(
+            part="contentDetails", id=channel_id
+        ).execute()
+        if not channel_res.get("items"):
+            return []
+        uploads_playlist = channel_res["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+    elif "playlist?list=" in channel_url:
+        uploads_playlist = channel_url.split("list=")[-1].split("&")[0]
+    else:
+        return []
+
+    # fetch videos from playlist
+    videos = []
+    next_page = None
+    while len(videos) < max_videos:
+        res = youtube.playlistItems().list(
+            part="snippet",
+            playlistId=uploads_playlist,
+            maxResults=min(50, max_videos - len(videos)),
+            pageToken=next_page,
+        ).execute()
+        for item in res.get("items", []):
+            snippet = item["snippet"]
+            video_id = snippet["resourceId"]["videoId"]
+            videos.append({
+                "video_id":  video_id,
+                "title":     snippet.get("title", ""),
+                "thumbnail": snippet["thumbnails"].get("high", {}).get("url", ""),
+                "published": snippet.get("publishedAt", "")[:10],
+                "url":       f"https://www.youtube.com/watch?v={video_id}",
+            })
+        next_page = res.get("nextPageToken")
+        if not next_page:
+            break
+
+    return videos[:max_videos]
+
 
 def get_video_id(url: str) -> str:
     if "v=" in url:
@@ -854,6 +919,102 @@ async def analyse(request: AnalysisRequest):
             "like_weighted":    like_weighted,
             "language_counts":  language_counts,
             "pin_suggestions":  pin_suggestions,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/analyse-channel")
+async def analyse_channel(request: ChannelAnalysisRequest):
+    """
+    Fetches the last N videos from a channel/playlist,
+    runs full sentiment + emotion analysis on each,
+    and returns per-video results plus cross-video comparison data.
+    """
+    try:
+        videos = fetch_channel_videos(request.url, max_videos=request.max_videos)
+        if not videos:
+            raise HTTPException(status_code=400, detail="Could not find videos for this channel or playlist URL.")
+
+        results = []
+        for video in videos:
+            try:
+                df = fetch_comments(video["url"], max_comments=request.comments_per_video)
+                if df.empty:
+                    continue
+
+                df = clean_comments(df)
+                if df.empty:
+                    continue
+
+                texts = df["text"].astype(str).tolist()
+
+                sent_results    = sentiment_pipeline(texts, batch_size=16)
+                df["sentiment"] = [r["label"] for r in sent_results]
+                df["sentiment_score"] = [round(r["score"], 3) for r in sent_results]
+
+                emotion_lists  = predict_emotions_batch(texts)
+                df["emotions"] = [",".join(e) for e in emotion_lists]
+                df["emotion"]  = [e[0] for e in emotion_lists]
+
+                total = len(df)
+                sentiment_counts = {
+                    "positive": int((df["sentiment"] == "positive").sum()),
+                    "neutral":  int((df["sentiment"] == "neutral").sum()),
+                    "negative": int((df["sentiment"] == "negative").sum()),
+                }
+                emotion_counts = emotion_counts_from_lists(emotion_lists)
+                comments       = df.to_dict(orient="records")
+                for i, c in enumerate(comments):
+                    c["emotions"] = emotion_lists[i]
+
+                fingerprint = classify_emotional_fingerprint(emotion_counts, total)
+
+                results.append({
+                    "video_id":         video["video_id"],
+                    "title":            video["title"],
+                    "thumbnail":        video["thumbnail"],
+                    "published":        video["published"],
+                    "url":              video["url"],
+                    "total":            total,
+                    "sentiment_counts": sentiment_counts,
+                    "emotion_counts":   emotion_counts,
+                    "fingerprint":      fingerprint,
+                    "positive_pct":     round(sentiment_counts["positive"] / max(total, 1) * 100, 1),
+                    "negative_pct":     round(sentiment_counts["negative"] / max(total, 1) * 100, 1),
+                    "top_emotions":     sorted(
+                        [(e, c) for e, c in emotion_counts.items() if e not in ("approval", "neutral") and c > 0],
+                        key=lambda x: -x[1]
+                    )[:5],
+                })
+            except Exception as e:
+                print(f"Error analysing {video['title']}: {e}")
+                continue
+
+        if not results:
+            raise HTTPException(status_code=400, detail="Could not analyse any videos from this channel.")
+
+        # cross-video comparison metrics
+        avg_positive = round(sum(r["positive_pct"] for r in results) / len(results), 1)
+        avg_negative = round(sum(r["negative_pct"] for r in results) / len(results), 1)
+        best_video   = max(results, key=lambda r: r["positive_pct"])
+        worst_video  = max(results, key=lambda r: r["negative_pct"])
+        fingerprints = [r["fingerprint"]["profile"] for r in results]
+        from collections import Counter
+        most_common_profile = Counter(fingerprints).most_common(1)[0][0]
+
+        return {
+            "status":               "success",
+            "total_videos":         len(results),
+            "channel_url":          request.url,
+            "avg_positive_pct":     avg_positive,
+            "avg_negative_pct":     avg_negative,
+            "best_received_video":  best_video["title"],
+            "most_divisive_video":  worst_video["title"],
+            "most_common_profile":  most_common_profile,
+            "videos":               results,
         }
     except HTTPException:
         raise
