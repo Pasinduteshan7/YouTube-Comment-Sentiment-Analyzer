@@ -10,10 +10,18 @@ from fetcher import fetch_comments
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
 import os
+import re
+from contextlib import asynccontextmanager
+from langdetect import detect, LangDetectException
 
 load_dotenv()
 
-app = FastAPI(title="YouTube Sentiment Analyzer API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    load_models()
+    yield
+
+app = FastAPI(title="YouTube Sentiment Analyzer API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -72,10 +80,6 @@ def load_models():
     ).to(device)
     emotion_model.eval()
     print("Models loaded!")
-
-@app.on_event("startup")
-async def startup_event():
-    load_models()
 
 
 # ── emotion inference ──────────────────────────────────────────────────
@@ -622,6 +626,81 @@ def generate_suggestions(
     return suggestions
 
 
+# ── helpers (clean, lang, pin) ─────────────────────────────────────────
+
+def clean_comments(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Removes low-quality comments before inference:
+    - Pure emoji or symbol-only comments
+    - Comments under 5 meaningful characters
+    - Exact duplicates
+    """
+    def is_meaningful(text: str) -> bool:
+        text = str(text).strip()
+        # remove emoji and symbols, check what remains
+        cleaned = re.sub(r'[^\w\s]', '', text, flags=re.UNICODE)
+        cleaned = cleaned.strip()
+        return len(cleaned) >= 5
+
+    original_count = len(df)
+    df = df[df["text"].apply(is_meaningful)]
+    df = df.drop_duplicates(subset="text")
+    df = df.reset_index(drop=True)
+    removed = original_count - len(df)
+    if removed > 0:
+        print(f"Filtered {removed} low-quality comments ({original_count} -> {len(df)})")
+    return df
+
+def detect_language(text: str) -> str:
+    try:
+        return detect(str(text))
+    except LangDetectException:
+        return "unknown"
+
+def find_pin_suggestions(comments: list) -> dict:
+    """
+    Identifies the 3 comments most worth a creator reply:
+    1. Best question — highest likes among comments with curiosity emotion
+    2. Best conflicted — highest likes among comments with both approval and disapproval
+    3. Best criticism — highest likes among negative sentiment comments
+    """
+    def get_emotions(c):
+        e = c.get("emotions", [])
+        if isinstance(e, str):
+            return [x.strip() for x in e.split(",") if x.strip()]
+        return e if isinstance(e, list) else []
+
+    # 1. Best question
+    questions = [c for c in comments if "curiosity" in get_emotions(c)]
+    best_question = max(questions, key=lambda c: int(c.get("likes", 0)), default=None)
+
+    # 2. Best conflicted (approval + disapproval)
+    conflicted = [
+        c for c in comments
+        if "approval" in get_emotions(c) and "disapproval" in get_emotions(c)
+    ]
+    best_conflicted = max(conflicted, key=lambda c: int(c.get("likes", 0)), default=None)
+
+    # 3. Best criticism (negative sentiment, most liked)
+    criticisms = [c for c in comments if c.get("sentiment") == "negative"]
+    best_criticism = max(criticisms, key=lambda c: int(c.get("likes", 0)), default=None)
+
+    def fmt(c):
+        if not c:
+            return None
+        return {
+            "text":      str(c.get("text", ""))[:150],
+            "likes":     c.get("likes", 0),
+            "emotions":  get_emotions(c),
+            "sentiment": c.get("sentiment", ""),
+        }
+
+    return {
+        "best_question":   fmt(best_question),
+        "best_conflicted": fmt(best_conflicted),
+        "best_criticism":  fmt(best_criticism),
+    }
+
 # ── routes ─────────────────────────────────────────────────────────────
 
 @app.get("/")
@@ -655,6 +734,10 @@ def last_analysis():
             lambda x: x.split(",") if isinstance(x, str) else ["neutral"]
         )
 
+    if "language" not in df.columns:
+        df["language"] = "unknown"
+    language_counts = df["language"].value_counts().head(10).to_dict()
+
     comments = df.to_dict(orient="records")
     sentiment_counts = {
         "positive": int((df["sentiment"] == "positive").sum()),
@@ -669,6 +752,7 @@ def last_analysis():
     fingerprint    = classify_emotional_fingerprint(emotion_counts, len(df))
     conflicted     = find_conflicted_comments(comments)
     like_weighted  = compute_like_weighted_emotions(comments)
+    pin_suggestions = find_pin_suggestions(comments)
 
     return {
         "total":          len(df),
@@ -682,6 +766,8 @@ def last_analysis():
         "fingerprint":    fingerprint,
         "conflicted":     conflicted,
         "like_weighted":  like_weighted,
+        "language_counts": language_counts,
+        "pin_suggestions": pin_suggestions,
     }
 
 
@@ -689,12 +775,15 @@ def last_analysis():
 async def analyse(request: AnalysisRequest):
     try:
         df = fetch_comments(request.url, max_comments=request.max_comments)
+        df = clean_comments(df)
         if df.empty:
-            raise HTTPException(status_code=400, detail="No comments found for this video.")
+            raise HTTPException(status_code=400, detail="No meaningful comments found after filtering.")
 
         video_id   = get_video_id(request.url)
         video_info = get_video_info(video_id)
         texts      = df["text"].astype(str).tolist()
+
+        df["language"] = df["text"].apply(detect_language)
 
         sent_results          = sentiment_pipeline(texts, batch_size=16)
         df["sentiment"]       = [r["label"] for r in sent_results]
@@ -722,12 +811,14 @@ async def analyse(request: AnalysisRequest):
         for i, c in enumerate(comments):
             c["emotions"] = emotion_lists[i]
 
+        language_counts = df["language"].value_counts().head(10).to_dict()
         fingerprint   = classify_emotional_fingerprint(emotion_counts, total)
         conflicted    = find_conflicted_comments(comments)
         like_weighted = compute_like_weighted_emotions(comments)
         suggestions   = generate_suggestions(comments, sentiment_counts, emotion_counts,
                                              fingerprint, conflicted, like_weighted)
         topics        = detect_topics(comments)
+        pin_suggestions = find_pin_suggestions(comments)
 
         with mlflow.start_run(run_name=f"run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"):
             mlflow.log_param("url",              request.url)
@@ -761,12 +852,45 @@ async def analyse(request: AnalysisRequest):
             "fingerprint":      fingerprint,
             "conflicted":       conflicted,
             "like_weighted":    like_weighted,
+            "language_counts":  language_counts,
+            "pin_suggestions":  pin_suggestions,
         }
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@app.get("/history")
+def get_history():
+    """Returns the last 15 analysis runs from MLflow."""
+    try:
+        client = mlflow.tracking.MlflowClient()
+        experiment = client.get_experiment_by_name("youtube-sentiment-analyser")
+        if not experiment:
+            return {"runs": []}
+        runs = client.search_runs(
+            experiment_ids=[experiment.experiment_id],
+            order_by=["start_time DESC"],
+            max_results=15,
+        )
+        history = []
+        for run in runs:
+            params  = run.data.params
+            metrics = run.data.metrics
+            history.append({
+                "run_id":       run.info.run_id,
+                "timestamp":    datetime.fromtimestamp(run.info.start_time / 1000).strftime("%Y-%m-%d %H:%M"),
+                "video_title":  params.get("video_title", "Unknown"),
+                "url":          params.get("url", ""),
+                "fingerprint":  params.get("fingerprint", ""),
+                "positive_pct": metrics.get("positive_pct", 0),
+                "negative_pct": metrics.get("negative_pct", 0),
+                "total":        int(params.get("total_comments", 0)),
+            })
+        return {"runs": history}
+    except Exception as e:
+        return {"runs": [], "error": str(e)}
 
 if __name__ == "__main__":
     import uvicorn

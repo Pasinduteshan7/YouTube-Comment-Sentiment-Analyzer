@@ -113,10 +113,15 @@ export default function App() {
   const [search, setSearch]         = useState("");
   const [topicOpen, setTopicOpen]   = useState(false);
   const [showAllEmo, setShowAllEmo] = useState(false);
+  const [history, setHistory]       = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
     axios.get(`${API}/last-analysis`)
       .then(res => { if (res.data.total > 0) setData(res.data); })
+      .catch(() => {});
+    axios.get(`${API}/history`)
+      .then(res => setHistory(res.data.runs || []))
       .catch(() => {});
   }, []);
 
@@ -195,9 +200,39 @@ export default function App() {
           }}>
             {loading ? "Analysing…" : "Analyse"}
           </button>
+          <button onClick={() => setShowHistory(o => !o)} style={{
+            padding: "9px 16px", borderRadius: 8, border: "1px solid #ddd",
+            fontSize: 13, cursor: "pointer", background: "transparent", color: "#555",
+          }}>
+            {showHistory ? "Hide history" : `History (${history.length})`}
+          </button>
         </div>
         {error && <p style={{ color: "#E24B4A", fontSize: 13, marginTop: 10, marginBottom: 0 }}>{error}</p>}
       </div>
+
+      {showHistory && history.length > 0 && (
+        <div style={{ background: "#f9f9f7", border: "1px solid #e0e0e0", borderRadius: 12, padding: "1.25rem", marginBottom: 24 }}>
+          <p style={{ fontWeight: 500, fontSize: 14, marginBottom: 14 }}>Past analyses</p>
+          <div style={{ display: "grid", gap: 8 }}>
+            {history.map((run, i) => (
+              <div key={run.run_id} style={{ background: "#fff", borderRadius: 8, padding: "10px 14px", border: "0.5px solid #e0e0e0", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "#333" }}>{run.video_title}</div>
+                  <div style={{ fontSize: 11, color: "#888", marginTop: 2 }}>{run.timestamp} · {run.total} comments · {run.fingerprint}</div>
+                </div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <span style={{ fontSize: 11, color: "#1D9E75" }}>{run.positive_pct}% pos</span>
+                  <span style={{ fontSize: 11, color: "#E24B4A" }}>{run.negative_pct}% neg</span>
+                  <button onClick={() => { setUrl(run.url); setShowHistory(false); }}
+                    style={{ fontSize: 11, padding: "3px 10px", borderRadius: 6, border: "0.5px solid #ddd", background: "none", cursor: "pointer", color: "#185FA5" }}>
+                    Re-analyse
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Loading */}
       {loading && (
@@ -317,6 +352,21 @@ export default function App() {
             </div>
           )}
 
+          {/* Language breakdown */}
+          {data.language_counts && Object.keys(data.language_counts).length > 1 && (
+            <div style={{ background: "#fff", border: "0.5px solid #e0e0e0", borderRadius: 12, padding: "1.25rem", marginBottom: 20 }}>
+              <p style={{ fontWeight: 500, fontSize: 14, marginBottom: 12 }}>Languages detected</p>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {Object.entries(data.language_counts).map(([lang, count]) => (
+                  <div key={lang} style={{ background: "#f5f5f3", borderRadius: 8, padding: "6px 12px", textAlign: "center" }}>
+                    <div style={{ fontSize: 14, fontWeight: 600 }}>{count}</div>
+                    <div style={{ fontSize: 11, color: "#888" }}>{lang}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* AI Suggestions */}
           {data.suggestions && data.suggestions.length > 0 && (
             <div style={{ background: "#fff", border: "0.5px solid #e0e0e0", borderRadius: 12, padding: "1.25rem", marginBottom: 20 }}>
@@ -328,6 +378,30 @@ export default function App() {
                     <div key={i} style={{ background: c.bg, border: `1px solid ${c.border}44`, borderLeft: `3px solid ${c.border}`, borderRadius: 8, padding: "10px 14px" }}>
                       <div style={{ fontSize: 13, fontWeight: 600, color: c.color, marginBottom: 3 }}>{s.title}</div>
                       <div style={{ fontSize: 12, color: "#555", lineHeight: 1.5 }}>{s.detail}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Pin these comments */}
+          {data.pin_suggestions && (
+            <div style={{ background: "#fff", border: "0.5px solid #e0e0e0", borderRadius: 12, padding: "1.25rem", marginBottom: 20 }}>
+              <p style={{ fontWeight: 500, fontSize: 14, marginBottom: 4 }}>Comments worth replying to</p>
+              <p style={{ fontSize: 12, color: "#888", marginBottom: 14 }}>These 3 comments will have the most impact if the creator replies to them</p>
+              <div style={{ display: "grid", gap: 10 }}>
+                {[
+                  { key: "best_question",   label: "Top question",   color: "#378ADD", bg: "#E6F1FB" },
+                  { key: "best_conflicted", label: "Most conflicted", color: "#534AB7", bg: "#EDE8FB" },
+                  { key: "best_criticism",  label: "Top criticism",  color: "#E24B4A", bg: "#FCEBEB" },
+                ].map(({ key, label, color, bg }) => {
+                  const c = data.pin_suggestions[key];
+                  if (!c) return null;
+                  return (
+                    <div key={key} style={{ background: bg, borderRadius: 8, padding: "10px 14px", borderLeft: `3px solid ${color}` }}>
+                      <div style={{ fontSize: 11, fontWeight: 600, color, marginBottom: 4 }}>{label} · {c.likes} likes</div>
+                      <div style={{ fontSize: 13, color: "#333", lineHeight: 1.4 }}>{c.text}</div>
                     </div>
                   );
                 })}

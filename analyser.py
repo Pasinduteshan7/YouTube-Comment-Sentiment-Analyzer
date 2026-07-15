@@ -35,62 +35,63 @@ def detect_mixed_sentiment(text: str, sent_pipeline) -> dict:
         "part2_score":     round(r2["score"], 3),
     }
 
-# ── load comments ──────────────────────────────────────────────
-df    = pd.read_csv("comments.csv")
-texts = df["text"].astype(str).tolist()
-print(f"Loaded {len(texts)} comments. Running models...\n")
+if __name__ == "__main__":
+    # ── load comments ──────────────────────────────────────────────
+    df    = pd.read_csv("comments.csv")
+    texts = df["text"].astype(str).tolist()
+    print(f"Loaded {len(texts)} comments. Running models...\n")
 
-# ── load models ────────────────────────────────────────────────
-print("Loading sentiment model...")
-sentiment = pipeline(
-    "sentiment-analysis",
-    model="cardiffnlp/twitter-roberta-base-sentiment-latest",
-    truncation=True, max_length=512
-)
+    # ── load models ────────────────────────────────────────────────
+    print("Loading sentiment model...")
+    sentiment = pipeline(
+        "sentiment-analysis",
+        model="cardiffnlp/twitter-roberta-base-sentiment-latest",
+        truncation=True, max_length=512
+    )
 
-print("Loading emotion model...")
-emotion = pipeline(
-    "text-classification",
-    model="j-hartmann/emotion-english-distilroberta-base",
-    truncation=True, max_length=512
-)
+    print("Loading emotion model...")
+    emotion = pipeline(
+        "text-classification",
+        model="j-hartmann/emotion-english-distilroberta-base",
+        truncation=True, max_length=512
+    )
 
-# ── run sentiment + emotion ────────────────────────────────────
-print("Analysing comments (this takes 1-2 mins)...\n")
-sent_results    = sentiment(texts, batch_size=16)
-emotion_results = emotion(texts,   batch_size=16)
+    # ── run sentiment + emotion ────────────────────────────────────
+    print("Analysing comments (this takes 1-2 mins)...\n")
+    sent_results    = sentiment(texts, batch_size=16)
+    emotion_results = emotion(texts,   batch_size=16)
 
-df["sentiment"]       = [r["label"] for r in sent_results]
-df["sentiment_score"] = [round(r["score"], 3) for r in sent_results]
-df["emotion"]         = [r["label"] for r in emotion_results]
-df["emotion_score"]   = [round(r["score"], 3) for r in emotion_results]
+    df["sentiment"]       = [r["label"] for r in sent_results]
+    df["sentiment_score"] = [round(r["score"], 3) for r in sent_results]
+    df["emotion"]         = [r["label"] for r in emotion_results]
+    df["emotion_score"]   = [round(r["score"], 3) for r in emotion_results]
 
-# ── run mixed sentiment detection ──────────────────────────────
-print("Detecting mixed sentiment...")
-mixed_data = [detect_mixed_sentiment(t, sentiment) for t in texts]
+    # ── run mixed sentiment detection ──────────────────────────────
+    print("Detecting mixed sentiment...")
+    mixed_data = [detect_mixed_sentiment(t, sentiment) for t in texts]
 
-df["is_mixed"]        = [m["is_mixed"]                for m in mixed_data]
-df["part1_text"]      = [m.get("part1_text", "")      for m in mixed_data]
-df["part1_sentiment"] = [m.get("part1_sentiment", "") for m in mixed_data]
-df["part2_text"]      = [m.get("part2_text", "")      for m in mixed_data]
-df["part2_sentiment"] = [m.get("part2_sentiment", "") for m in mixed_data]
+    df["is_mixed"]        = [m["is_mixed"]                for m in mixed_data]
+    df["part1_text"]      = [m.get("part1_text", "")      for m in mixed_data]
+    df["part1_sentiment"] = [m.get("part1_sentiment", "") for m in mixed_data]
+    df["part2_text"]      = [m.get("part2_text", "")      for m in mixed_data]
+    df["part2_sentiment"] = [m.get("part2_sentiment", "") for m in mixed_data]
 
-# ── save ───────────────────────────────────────────────────────
-df.to_csv("comments_analysed.csv", index=False)
+    # ── save ───────────────────────────────────────────────────────
+    df.to_csv("comments_analysed.csv", index=False)
 
-# ── summary ────────────────────────────────────────────────────
-print("=== SENTIMENT BREAKDOWN ===")
-print(df["sentiment"].value_counts().to_string())
+    # ── summary ────────────────────────────────────────────────────
+    print("=== SENTIMENT BREAKDOWN ===")
+    print(df["sentiment"].value_counts().to_string())
 
-print("\n=== EMOTION BREAKDOWN ===")
-print(df["emotion"].value_counts().to_string())
+    print("\n=== EMOTION BREAKDOWN ===")
+    print(df["emotion"].value_counts().to_string())
 
-mixed_count = df["is_mixed"].sum()
-print(f"\n=== MIXED SENTIMENT ===")
-print(f"Mixed comments detected: {mixed_count}")
-if mixed_count > 0:
-    print(df[df["is_mixed"] == True][["text", "part1_sentiment", "part2_sentiment"]].head(5).to_string())
+    mixed_count = df["is_mixed"].sum()
+    print(f"\n=== MIXED SENTIMENT ===")
+    print(f"Mixed comments detected: {mixed_count}")
+    if mixed_count > 0:
+        print(df[df["is_mixed"] == True][["text", "part1_sentiment", "part2_sentiment"]].head(5).to_string())
 
-print("\n=== SAMPLE RESULTS ===")
-print(df[["text", "sentiment", "emotion", "is_mixed"]].head(10).to_string())
-print("\nDone! Saved to comments_analysed.csv")
+    print("\n=== SAMPLE RESULTS ===")
+    print(df[["text", "sentiment", "emotion", "is_mixed"]].head(10).to_string())
+    print("\nDone! Saved to comments_analysed.csv")
