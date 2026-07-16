@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import ReactMarkdown from "react-markdown";
 import {
   PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, CartesianGrid, Legend,
   XAxis, YAxis, Tooltip, ResponsiveContainer
@@ -446,20 +447,28 @@ export default function App() {
           )}
 
           {/* AI Suggestions */}
-          {data.suggestions && data.suggestions.length > 0 && (
-            <div style={{ background: "#fff", border: "0.5px solid #e0e0e0", borderRadius: 12, padding: "1.25rem", marginBottom: 20 }}>
-              <p style={{ fontWeight: 500, fontSize: 14, marginBottom: 14 }}>AI improvement suggestions</p>
-              <div style={{ display: "grid", gap: 10 }}>
-                {data.suggestions.map((s, i) => {
-                  const c = SUG_STYLE[s.type] || SUG_STYLE.info;
-                  return (
-                    <div key={i} style={{ background: c.bg, border: `1px solid ${c.border}44`, borderLeft: `3px solid ${c.border}`, borderRadius: 8, padding: "10px 14px" }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: c.color, marginBottom: 3 }}>{s.title}</div>
-                      <div style={{ fontSize: 12, color: "#555", lineHeight: 1.5 }}>{s.detail}</div>
-                    </div>
-                  );
-                })}
-              </div>
+          {data.suggestions && (
+            <div style={{ background: "#F4F7FC", border: "1px solid #E1E8F2", borderRadius: 12, padding: "1.5rem", marginBottom: 20 }}>
+              <p style={{ fontWeight: 600, fontSize: 16, marginBottom: 16, color: "#185FA5", display: "flex", alignItems: "center", gap: 8 }}>
+                ✨ Strategic Creator Brief
+              </p>
+              {typeof data.suggestions === "string" ? (
+                <div style={{ fontSize: 13, color: "#333", lineHeight: 1.6, display: "flex", flexDirection: "column", gap: 14 }}>
+                  <ReactMarkdown>{data.suggestions}</ReactMarkdown>
+                </div>
+              ) : (
+                <div style={{ display: "grid", gap: 10 }}>
+                  {data.suggestions.map((s, i) => {
+                    const c = SUG_STYLE[s.type] || SUG_STYLE.info;
+                    return (
+                      <div key={i} style={{ background: c.bg, border: `1px solid ${c.border}44`, borderLeft: `3px solid ${c.border}`, borderRadius: 8, padding: "10px 14px" }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: c.color, marginBottom: 3 }}>{s.title}</div>
+                        <div style={{ fontSize: 12, color: "#555", lineHeight: 1.5 }}>{s.detail}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
 

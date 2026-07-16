@@ -13,6 +13,7 @@ import os
 import re
 from contextlib import asynccontextmanager
 from langdetect import detect, LangDetectException
+import groq
 
 load_dotenv()
 
@@ -459,236 +460,48 @@ def generate_suggestions(
     fingerprint: dict = None,
     conflicted: list = None,
     like_weighted: dict = None,
-) -> list:
-    total   = max(len(comments), 1)
-    neg_pct = round(sentiment_counts["negative"] / total * 100)
-    pos_pct = round(sentiment_counts["positive"] / total * 100)
+):
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        return [{"type": "warning", "title": "API Key Missing", "detail": "Add GROQ_API_KEY to your .env to enable the AI creator brief."}]
+        
+    try:
+        client = groq.Groq(api_key=api_key)
+        
+        total = max(len(comments), 1)
+        top_comments = sorted(comments, key=lambda x: int(x.get("likes", 0)), reverse=True)[:40]
+        comment_texts = "\n".join([f"- (Likes: {c.get('likes', 0)}) {c.get('text', '')}" for c in top_comments])
+        
+        prompt = f"""You are an expert YouTube Strategist. Your client has just uploaded a video (or you are analysing their channel).
+Based on the following data, write a 3-4 paragraph strategic brief for the creator.
+Focus on specific insights, viewer demands, and actionable advice. DO NOT use generic advice. 
+Reference specific viewer comments if relevant (e.g., "Several viewers asked for a Luke Cage crossover").
+Do not include a greeting or sign-off, just output the brief in Markdown format.
 
-    def pct(emo):
-        return round(emotion_counts.get(emo, 0) / total * 100, 1)
+DATA:
+Total Comments Analysed: {total}
+Sentiment: {sentiment_counts}
+Emotions: {emotion_counts}
+Emotional Fingerprint: {fingerprint.get('profile', 'Unknown') if fingerprint else 'Unknown'}
 
-    negative_text = " ".join(
-        c["text"] for c in comments if c.get("sentiment") == "negative"
-    )[:3000].lower()
-    positive_text = " ".join(
-        c["text"] for c in comments if c.get("sentiment") == "positive"
-    )[:2000].lower()
-
-    suggestions = []
-
-    # 1. Emotional fingerprint
-    if fingerprint:
-        profile_type = {
-            "Creator Loyalty":          "success",
-            "Mind-Opening":             "success",
-            "Entertainment Hit":        "success",
-            "Skill Showcase":           "success",
-            "Motivational":             "success",
-            "High Energy":              "success",
-            "Emotional Storytelling":   "info",
-            "Tutorial / Explainer":     "info",
-            "Mixed Reception":          "info",
-            "Controversial / Divisive": "warning",
-        }.get(fingerprint["profile"], "info")
-        suggestions.append({
-            "type":   profile_type,
-            "title":  f"Emotional profile: {fingerprint['profile']}",
-            "detail": fingerprint["description"],
-        })
-
-    # 2. Like-weighted emotion insight
-    if like_weighted:
-        top_weighted = list(like_weighted.keys())[:3]
-        if top_weighted:
-            suggestions.append({
-                "type":   "info",
-                "title":  "What your most-liked comments feel",
-                "detail": (
-                    f"Weighting emotions by likes, your engaged audience primarily feels: "
-                    f"{', '.join(top_weighted)}. These are the emotions that resonate with "
-                    f"viewers who care enough to interact -- prioritise them in future videos."
-                ),
-            })
-
-    # 3. Sentiment overview
-    if neg_pct > 30:
-        suggestions.append({
-            "type":   "warning",
-            "title":  "High negative sentiment detected",
-            "detail": f"{neg_pct}% of comments are negative. See the negative emotion breakdown below for specifics.",
-        })
-    if neg_pct <= 15:
-        suggestions.append({
-            "type":   "success",
-            "title":  "Excellent audience reception",
-            "detail": f"Only {neg_pct}% negative comments. Your audience is highly satisfied -- keep this content style.",
-        })
-    if pos_pct >= 40:
-        suggestions.append({
-            "type":   "success",
-            "title":  "Strong positive engagement",
-            "detail": f"{pos_pct}% positive comments. Consider making more content in this topic area.",
-        })
-
-    # 4. Negative emotion breakdown
-    neg_emotions = {
-        "anger":          pct("anger"),
-        "annoyance":      pct("annoyance"),
-        "disappointment": pct("disappointment"),
-        "disgust":        pct("disgust"),
-        "disapproval":    pct("disapproval"),
-        "fear":           pct("fear"),
-        "confusion":      pct("confusion"),
-        "sadness":        pct("sadness"),
-    }
-    dominant_negatives = {k: v for k, v in neg_emotions.items() if v >= 3}
-    if dominant_negatives:
-        top_neg = max(dominant_negatives, key=dominant_negatives.get)
-        neg_advice = {
-            "anger":          "This usually signals controversial content or a strong expectation mismatch -- review your thumbnail and title.",
-            "annoyance":      "Viewers found something irritating -- common causes are slow pacing, long intros, or repetitive content.",
-            "disappointment": "Viewers expected more -- the concept may have been stronger than the execution. Consider a follow-up that delivers more deeply.",
-            "disgust":        "Something in this video strongly repelled viewers. Review comments for specific triggers.",
-            "disapproval":    "Viewers disagree with a position or decision in this content. Consider addressing it directly in a response or follow-up.",
-            "fear":           "Content felt unsettling or threatening to viewers. Ensure the tone matches audience expectations.",
-            "confusion":      "Viewers struggled to follow the content. Add chapter markers, clearer structure, or a summary at the end.",
-            "sadness":        "Viewers felt sad -- this can be intentional (emotional storytelling) or unintended (bad news, tone mismatch).",
-        }
-        breakdown_str = ", ".join(
-            f"{k} {v}%" for k, v in sorted(dominant_negatives.items(), key=lambda x: -x[1])
+Top Comments:
+{comment_texts}
+"""
+        
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": "You are an expert YouTube Strategist. Output markdown."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.6,
+            max_tokens=1024,
         )
-        suggestions.append({
-            "type":   "warning",
-            "title":  f"Negative emotion breakdown -- primary: {top_neg}",
-            "detail": f"Negative feelings split as: {breakdown_str}. {neg_advice.get(top_neg, '')}",
-        })
-
-    # 5. Gratitude signal
-    gratitude_pct = pct("gratitude")
-    if gratitude_pct >= 8:
-        suggestions.append({
-            "type":   "success",
-            "title":  f"High gratitude signal ({gratitude_pct}% of comments)",
-            "detail": (
-                "Viewers feel genuinely thankful for this content -- the strongest predictor of "
-                "long-term subscribers. These viewers feel the content gave them something valuable."
-            ),
-        })
-    elif gratitude_pct >= 3:
-        suggestions.append({
-            "type":   "info",
-            "title":  f"Moderate gratitude ({gratitude_pct}% of comments)",
-            "detail": (
-                "Some viewers feel grateful, but there is room to grow. Try being more explicit "
-                "about the value you are delivering -- tutorials, personal stories, and "
-                "resource-sharing tend to drive gratitude higher."
-            ),
-        })
-
-    # 6. Realization signal
-    realization_pct = pct("realization")
-    if realization_pct >= 10:
-        suggestions.append({
-            "type":   "success",
-            "title":  f"Strong realization signal ({realization_pct}% of comments)",
-            "detail": (
-                "This video genuinely changed how viewers think or see something. "
-                "Content that produces realization has very high share rates and long-term recall -- "
-                "consider making more in this format."
-            ),
-        })
-    elif realization_pct >= 5:
-        suggestions.append({
-            "type":   "info",
-            "title":  f"Realization present ({realization_pct}% of comments)",
-            "detail": (
-                "Some viewers had an aha moment watching this. To amplify this, be more deliberate "
-                "about your reveal structure -- build tension before the insight lands."
-            ),
-        })
-
-    # 7. Curiosity and confusion
-    curiosity_pct = pct("curiosity")
-    confusion_pct = pct("confusion")
-    if confusion_pct >= 10:
-        suggestions.append({
-            "type":   "warning",
-            "title":  f"Confusion is elevated ({confusion_pct}% of comments)",
-            "detail": (
-                "A significant share of viewers found this content hard to follow. "
-                "Add a clear intro, use chapter markers, and consider a summary at the end."
-            ),
-        })
-    if curiosity_pct >= 12 and confusion_pct < 8:
-        suggestions.append({
-            "type":   "info",
-            "title":  f"High curiosity ({curiosity_pct}% of comments)",
-            "detail": (
-                "Viewers are asking questions and wanting to know more -- a strong signal of engaged interest. "
-                "Pin a comment answering the top questions, or make a follow-up video addressing them."
-            ),
-        })
-
-    # 8. Conflicted comments
-    if conflicted and len(conflicted) >= 3:
-        conflict_pairs_found = list({c["conflict_pair"] for c in conflicted})[:2]
-        suggestions.append({
-            "type":   "warning",
-            "title":  f"{len(conflicted)} comments carry contradictory emotions",
-            "detail": (
-                f"The most common emotional conflicts are: {', '.join(conflict_pairs_found)}. "
-                f"These viewers felt pulled in two directions -- something worked and something did not. "
-                f"See the conflicted comments section below for the specific comments."
-            ),
-        })
-
-    # 9. Keyword tips from negative comments
-    if any(w in negative_text for w in ["long", "slow", "boring", "skip", "too long"]):
-        suggestions.append({
-            "type":   "warning",
-            "title":  "Pacing feedback in negative comments",
-            "detail": "Negative comments mention length or pacing. Consider tighter editing and chapter markers.",
-        })
-    if any(w in negative_text for w in ["audio", "sound", "hear", "mic", "volume"]):
-        suggestions.append({
-            "type":   "warning",
-            "title":  "Audio quality complaints",
-            "detail": "Viewers are flagging audio issues. Better microphone or post-processing could significantly help.",
-        })
-    if any(w in negative_text for w in ["clickbait", "mislead", "thumbnail", "title"]):
-        suggestions.append({
-            "type":   "warning",
-            "title":  "Thumbnail / title mismatch",
-            "detail": "Viewers feel the thumbnail or title was misleading. Make sure content delivers on the promise.",
-        })
-
-    # 10. Positive opportunities
-    if any(w in positive_text for w in ["part 2", "more", "next", "series", "continue", "follow up"]):
-        suggestions.append({
-            "type":   "info",
-            "title":  "Viewers want more content",
-            "detail": "Positive comments ask for follow-up. A part 2 or series would perform well.",
-        })
-
-    optimism_pct = pct("optimism")
-    if optimism_pct >= 10:
-        suggestions.append({
-            "type":   "success",
-            "title":  f"Viewers feel optimistic after watching ({optimism_pct}%)",
-            "detail": (
-                "Content that leaves viewers feeling hopeful is rare and valuable. "
-                "Keep the positive, forward-looking tone in future videos."
-            ),
-        })
-
-    if not suggestions:
-        suggestions.append({
-            "type":   "info",
-            "title":  "Neutral audience response",
-            "detail": "Comments are mostly neutral. Try ending videos with a direct question to boost engagement.",
-        })
-
-    return suggestions
+        
+        return response.choices[0].message.content
+    except Exception as e:
+        print(f"Groq API Error: {e}")
+        return [{"type": "warning", "title": "AI Brief Failed", "detail": f"Could not generate report: {str(e)}"}]
 
 
 # ── helpers (clean, lang, pin) ─────────────────────────────────────────
@@ -786,6 +599,9 @@ def last_analysis():
     df = pd.read_csv(csv_path)
     if df.empty:
         return empty
+        
+    # Replace NaN with None for JSON compliance
+    df = df.where(pd.notna(df), None)
 
     for col in ["is_mixed", "part1_text", "part1_sentiment", "part2_text", "part2_sentiment"]:
         if col not in df.columns:
