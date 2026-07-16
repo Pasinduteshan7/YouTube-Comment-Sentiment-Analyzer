@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import {
-  PieChart, Pie, Cell, BarChart, Bar,
+  PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, CartesianGrid, Legend,
   XAxis, YAxis, Tooltip, ResponsiveContainer
 } from "recharts";
 
@@ -559,6 +559,24 @@ export default function App() {
             <div style={{ background: "#FAECE7", borderRadius: 10, padding: "1rem", borderLeft: "3px solid #D85A30" }}>
               <div style={{ fontSize: 11, color: "#D85A30", fontWeight: 500, marginBottom: 4 }}>Most divisive video</div>
               <div style={{ fontSize: 13, color: "#712B13" }}>{channelData.most_divisive_video}</div>
+            </div>
+          </div>
+
+          {/* Trend Chart */}
+          <div style={{ background: "#fff", border: "0.5px solid #e0e0e0", borderRadius: 12, padding: "1.25rem", marginBottom: 20 }}>
+            <p style={{ fontWeight: 600, fontSize: 14, marginBottom: 16 }}>Sentiment Trend Over Time</p>
+            <div style={{ height: 280 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={[...channelData.videos].reverse()} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <XAxis dataKey="title" tick={{ fontSize: 10, fill: "#888" }} tickFormatter={(val) => val.length > 20 ? val.substring(0,20)+"..." : val} />
+                  <YAxis tick={{ fontSize: 11, fill: "#888" }} domain={[0, 100]} unit="%" />
+                  <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12, border: "0.5px solid #ccc" }} />
+                  <Legend wrapperStyle={{ fontSize: 12, paddingTop: 10 }} />
+                  <Line type="monotone" dataKey="positive_pct" name="Positive %" stroke="#1D9E75" strokeWidth={3} activeDot={{ r: 6 }} />
+                  <Line type="monotone" dataKey="negative_pct" name="Negative %" stroke="#E24B4A" strokeWidth={3} activeDot={{ r: 6 }} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
