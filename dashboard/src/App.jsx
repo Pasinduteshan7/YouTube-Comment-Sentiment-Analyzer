@@ -511,7 +511,7 @@ export default function App() {
               <span style={{ textAlign: "center" }}>Emotions</span>
               <span style={{ textAlign: "center" }}>Likes</span>
             </div>
-            {visible.slice(0, 50).map((c, i) => (
+            {visible.map((c, i) => (
               <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 100px 160px 50px", padding: "10px 14px", borderTop: "0.5px solid #f0f0f0", fontSize: 13, alignItems: "center" }}>
                 <span style={{ color: "#333", lineHeight: 1.4 }}>{c.text}</span>
                 <span style={{ textAlign: "center" }}>
@@ -526,8 +526,8 @@ export default function App() {
             {visible.length === 0 && (
               <div style={{ padding: "2rem", textAlign: "center", color: "#888", fontSize: 14 }}>No comments match your filter.</div>
             )}
-            {visible.length > 50 && (
-              <div style={{ padding: "10px", textAlign: "center", color: "#888", fontSize: 12 }}>Showing 50 of {visible.length} comments</div>
+            {visible.length > 0 && (
+              <div style={{ padding: "10px", textAlign: "center", color: "#888", fontSize: 12 }}>Showing all {visible.length} comments</div>
             )}
           </div>
         </>
@@ -588,6 +588,36 @@ export default function App() {
               </div>
             ))}
           </div>
+
+          {/* Latest comments across channel */}
+          {channelData.latest_comments && channelData.latest_comments.length > 0 && (
+            <div style={{ marginTop: 24, background: "#fff", border: "0.5px solid #e0e0e0", borderRadius: 12, overflow: "hidden" }}>
+              <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #e0e0e0", background: "#f9f9f7", fontWeight: 600, fontSize: 14 }}>
+                Latest Comments Across Channel
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 100px 160px 50px", background: "#f5f5f3", padding: "8px 14px", fontSize: 12, fontWeight: 500, color: "#666" }}>
+                <span>Comment</span>
+                <span style={{ textAlign: "center" }}>Sentiment</span>
+                <span style={{ textAlign: "center" }}>Emotions</span>
+                <span style={{ textAlign: "center" }}>Likes</span>
+              </div>
+              {channelData.latest_comments.map((c, i) => (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 100px 160px 50px", padding: "10px 14px", borderTop: "0.5px solid #f0f0f0", fontSize: 13, alignItems: "center" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                    <span style={{ color: "#333", lineHeight: 1.4 }}>{c.text}</span>
+                    <span style={{ color: "#888", fontSize: 11 }}>from {c.video_title}</span>
+                  </div>
+                  <span style={{ textAlign: "center" }}>
+                    <SentimentBadge c={c} />
+                  </span>
+                  <span style={{ textAlign: "center" }}>
+                    <EmotionBadges emotions={c.emotions} />
+                  </span>
+                  <span style={{ textAlign: "center", color: "#888", fontSize: 12 }}>{c.likes ?? "—"}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

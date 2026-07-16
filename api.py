@@ -939,6 +939,8 @@ async def analyse_channel(request: ChannelAnalysisRequest):
             raise HTTPException(status_code=400, detail="Could not find videos for this channel or playlist URL.")
 
         results = []
+        all_channel_comments = []
+
         for video in videos:
             try:
                 df = fetch_comments(video["url"], max_comments=request.comments_per_video)
@@ -969,6 +971,9 @@ async def analyse_channel(request: ChannelAnalysisRequest):
                 comments       = df.to_dict(orient="records")
                 for i, c in enumerate(comments):
                     c["emotions"] = emotion_lists[i]
+                    c["video_title"] = video["title"]
+
+                all_channel_comments.extend(comments)
 
                 fingerprint = classify_emotional_fingerprint(emotion_counts, total)
 
@@ -1015,6 +1020,7 @@ async def analyse_channel(request: ChannelAnalysisRequest):
             "most_divisive_video":  worst_video["title"],
             "most_common_profile":  most_common_profile,
             "videos":               results,
+            "latest_comments":      all_channel_comments[:50],
         }
     except HTTPException:
         raise
