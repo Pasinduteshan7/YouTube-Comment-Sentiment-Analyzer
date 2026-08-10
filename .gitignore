@@ -23,6 +23,9 @@ comments.csv
 comments_analysed.csv
 labelling_sheet.csv
 
+# large archive files
+*.zip
+
 # Windows/VS Code
 .vscode/
 Thumbs.db
@@ -30,3 +33,6 @@ desktop.ini
 
 # duplicate folder (URL-encoded name)
 sentiment%20analyzer/
+
+# Node
+dashboard/node_modules/

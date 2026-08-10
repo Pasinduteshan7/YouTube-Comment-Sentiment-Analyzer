@@ -13,6 +13,7 @@ Usage:
 import os
 import numpy as np
 import pandas as pd
+import mlflow
 import torch
 from torch import nn
 from sklearn.metrics import f1_score
@@ -162,7 +163,7 @@ def main():
         metric_for_best_model="macro_f1",
         logging_steps=100,
         fp16=torch.cuda.is_available(),
-        report_to="none",
+        report_to="mlflow",
     )
 
     trainer = MultiLabelTrainer(
@@ -180,21 +181,48 @@ def main():
     print(f"  fp16:   {torch.cuda.is_available()}")
     print("  Expected time: ~50-70 minutes on RTX 3050.\n")
 
-    trainer.train()
+    # ── MLflow experiment tracking ──────────────────────────────────
+    mlflow.set_tracking_uri("sqlite:///mlflow.db")
+    mlflow.set_experiment("emotion-model-training")
 
-    print("\nEvaluating on test set...")
-    test_results = trainer.evaluate(test_dataset)
-    print(f"  Test micro-F1: {test_results['eval_micro_f1']:.3f}")
-    print(f"  Test macro-F1: {test_results['eval_macro_f1']:.3f}")
+    with mlflow.start_run(run_name=f"finetune_{BASE_MODEL.split('/')[-1]}"):
+        # Log hyperparameters
+        mlflow.log_param("base_model", BASE_MODEL)
+        mlflow.log_param("num_epochs", NUM_EPOCHS)
+        mlflow.log_param("batch_size", BATCH_SIZE)
+        mlflow.log_param("learning_rate", LEARNING_RATE)
+        mlflow.log_param("gradient_accumulation", GRADIENT_ACCUMULATION)
+        mlflow.log_param("prediction_threshold", PREDICTION_THRESHOLD)
+        mlflow.log_param("num_labels", NUM_LABELS)
+        mlflow.log_param("max_length", 128)
+        mlflow.log_param("train_size", len(train_dataset))
+        mlflow.log_param("val_size", len(val_dataset))
+        mlflow.log_param("test_size", len(test_dataset))
+        mlflow.log_param("fp16", torch.cuda.is_available())
 
-    print(f"\nSaving model to {OUTPUT_DIR}...")
-    trainer.save_model(OUTPUT_DIR)
-    tokenizer.save_pretrained(OUTPUT_DIR)
+        trainer.train()
 
-    print(f"\nDone! Model saved to {OUTPUT_DIR}")
-    print("\nTo activate it, change one line in api.py:")
-    print(f'  EMOTION_MODEL_PATH = "{OUTPUT_DIR}"')
-    print("Then restart uvicorn.")
+        print("\nEvaluating on test set...")
+        test_results = trainer.evaluate(test_dataset)
+        print(f"  Test micro-F1: {test_results['eval_micro_f1']:.3f}")
+        print(f"  Test macro-F1: {test_results['eval_macro_f1']:.3f}")
+
+        # Log final test metrics
+        mlflow.log_metric("test_micro_f1", test_results["eval_micro_f1"])
+        mlflow.log_metric("test_macro_f1", test_results["eval_macro_f1"])
+        mlflow.log_metric("test_loss", test_results.get("eval_loss", 0))
+
+        print(f"\nSaving model to {OUTPUT_DIR}...")
+        trainer.save_model(OUTPUT_DIR)
+        tokenizer.save_pretrained(OUTPUT_DIR)
+
+        # Log model artifacts to MLflow
+        mlflow.log_artifacts(OUTPUT_DIR, artifact_path="model")
+
+        print(f"\nDone! Model saved to {OUTPUT_DIR}")
+        print(f"MLflow run logged. View at: mlflow ui")
+        print("\nTo activate it, update EMOTION_MODEL_PATH in models.py")
+        print("Then restart uvicorn.")
 
 
 if __name__ == "__main__":

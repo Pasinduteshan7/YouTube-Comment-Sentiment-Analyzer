@@ -1,15 +1,23 @@
+"""
+MLOps utilities for experiment tracking and scheduled analysis.
+
+Usage:
+    python mlops.py                       # Log current results to MLflow
+    python mlops.py --schedule VIDEO_URL  # Run scheduled re-analysis every 24h
+"""
+
 import mlflow
-import mlflow.sklearn
 import pandas as pd
-import json
 from datetime import datetime
 import schedule
 import time
 import subprocess
+import argparse
 
 # ── point to the same db the UI is using ──
 mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("youtube-sentiment-analyser")
+
 
 def log_analysis_run(csv_path="comments_analysed.csv"):
     """Log every analysis run to MLflow so you can track results over time."""
@@ -20,16 +28,26 @@ def log_analysis_run(csv_path="comments_analysed.csv"):
     pos_pct   = round(len(df[df.sentiment == "positive"]) / total * 100, 2)
     neg_pct   = round(len(df[df.sentiment == "negative"]) / total * 100, 2)
     neu_pct   = round(len(df[df.sentiment == "neutral"])  / total * 100, 2)
-    top_emotion = df["emotion"].value_counts().idxmax()
+
+    # Handle multi-label emotions (comma-separated in CSV)
+    if "emotions" in df.columns:
+        all_emotions = []
+        for emo_str in df["emotions"].dropna():
+            all_emotions.extend([e.strip() for e in str(emo_str).split(",") if e.strip()])
+        from collections import Counter
+        emotion_counter = Counter(all_emotions)
+        top_emotion = emotion_counter.most_common(1)[0][0] if emotion_counter else "unknown"
+    else:
+        top_emotion = df["emotion"].value_counts().idxmax() if "emotion" in df.columns else "unknown"
+
     avg_sent_score = round(df["sentiment_score"].mean(), 3)
-    avg_emo_score  = round(df["emotion_score"].mean(), 3)
 
     with mlflow.start_run(run_name=f"run_{datetime.now().strftime('%Y%m%d_%H%M%S')}"):
 
         # log parameters
         mlflow.log_param("total_comments",    total)
         mlflow.log_param("sentiment_model",   "cardiffnlp/twitter-roberta-base-sentiment-latest")
-        mlflow.log_param("emotion_model",     "j-hartmann/emotion-english-distilroberta-base")
+        mlflow.log_param("emotion_model",     "fine-tuned-emotion-model-multilingual")
         mlflow.log_param("analysis_date",     datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
         # log metrics
@@ -37,11 +55,14 @@ def log_analysis_run(csv_path="comments_analysed.csv"):
         mlflow.log_metric("negative_pct",        neg_pct)
         mlflow.log_metric("neutral_pct",         neu_pct)
         mlflow.log_metric("avg_sentiment_score", avg_sent_score)
-        mlflow.log_metric("avg_emotion_score",   avg_emo_score)
 
         # log emotion counts
-        for emotion, count in df["emotion"].value_counts().items():
-            mlflow.log_metric(f"emotion_{emotion}", int(count))
+        if "emotions" in df.columns:
+            for emo, count in emotion_counter.most_common():
+                mlflow.log_metric(f"emotion_{emo}", int(count))
+        elif "emotion" in df.columns:
+            for emotion, count in df["emotion"].value_counts().items():
+                mlflow.log_metric(f"emotion_{emotion}", int(count))
 
         # log the csv as artifact
         mlflow.log_artifact(csv_path)
@@ -82,5 +103,13 @@ def scheduled_pipeline(video_url, interval_hours=24):
 
 
 if __name__ == "__main__":
-    print("Logging current results to MLflow...")
-    log_analysis_run()
+    parser = argparse.ArgumentParser(description="MLOps utilities")
+    parser.add_argument("--schedule", type=str, help="Video URL for scheduled re-analysis")
+    parser.add_argument("--interval", type=int, default=24, help="Re-analysis interval in hours (default: 24)")
+    args = parser.parse_args()
+
+    if args.schedule:
+        scheduled_pipeline(args.schedule, args.interval)
+    else:
+        print("Logging current results to MLflow...")
+        log_analysis_run()
