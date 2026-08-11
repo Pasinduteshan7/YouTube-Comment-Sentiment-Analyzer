@@ -35,7 +35,32 @@ export default function CommentTable({ comments, title }) {
       {pageComments.map((c, i) => (
         <div key={startIdx + i} className="comment-row">
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            <span className="comment-text">{c.text}</span>
+            <div style={{ display: "flex", gap: "8px", alignItems: "baseline" }}>
+              {c.is_toxic && (
+                <span style={{ 
+                  backgroundColor: "rgba(220, 38, 38, 0.15)", 
+                  color: "#ef4444", 
+                  padding: "2px 6px", 
+                  borderRadius: "4px", 
+                  fontSize: "0.65rem", 
+                  fontWeight: "bold",
+                  border: "1px solid rgba(220, 38, 38, 0.3)"
+                }}>
+                  [!] Toxic
+                </span>
+              )}
+              <span 
+                className="comment-text" 
+                style={{ 
+                  filter: c.is_toxic ? "blur(4px)" : "none",
+                  transition: "filter 0.2s ease"
+                }}
+                onMouseOver={(e) => { if(c.is_toxic) e.target.style.filter = "none"; }}
+                onMouseOut={(e) => { if(c.is_toxic) e.target.style.filter = "blur(4px)"; }}
+              >
+                {c.text}
+              </span>
+            </div>
             {c.video_title && (
               <span style={{ color: "var(--text-muted)", fontSize: "0.72rem" }}>from {c.video_title}</span>
             )}

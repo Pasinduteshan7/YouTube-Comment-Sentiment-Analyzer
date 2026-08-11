@@ -97,7 +97,8 @@ export default function App() {
     ? (data.comments || []).filter(c => {
         const mf = filter === "all"
           || (filter === "mixed" && isMixed(c))
-          || (!isMixed(c) && c.sentiment === filter);
+          || (filter === "toxic" && c.is_toxic)
+          || (!isMixed(c) && c.sentiment === filter && filter !== "toxic");
         const ms = (c.text || "").toLowerCase().includes(search.toLowerCase());
         return mf && ms;
       })
@@ -213,6 +214,7 @@ export default function App() {
           <SentimentCards 
             sentimentCounts={data.sentiment_counts} 
             mixedCount={mixedCount} 
+            toxicCount={data.toxic_count}
             total={total} 
           />
 
@@ -258,7 +260,7 @@ export default function App() {
 
           {/* Filters + Search */}
           <div className="filter-bar">
-            {["all", "positive", "neutral", "negative", "mixed"].map(f => (
+            {["all", "positive", "neutral", "negative", "mixed", "toxic"].map(f => (
               <button key={f} onClick={() => setFilter(f)}
                 className={`filter-btn ${filter === f ? "active" : ""}`}>
                 {f.charAt(0).toUpperCase() + f.slice(1)}

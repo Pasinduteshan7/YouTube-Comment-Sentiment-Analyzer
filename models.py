@@ -9,6 +9,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipe
 
 SENTIMENT_MODEL_PATH = "cardiffnlp/twitter-xlm-roberta-base-sentiment"
 EMOTION_MODEL_PATH   = "./fine-tuned-emotion-model-multilingual"
+TOXICITY_MODEL_PATH  = "citizenlab/distilbert-base-multilingual-cased-toxicity"
 
 EMOTION_LABELS = [
     "admiration", "amusement", "anger", "annoyance", "approval",
@@ -25,12 +26,13 @@ EMOTION_THRESHOLD = 0.3
 sentiment_pipeline = None
 emotion_tokenizer  = None
 emotion_model      = None
+toxicity_pipeline  = None
 device             = None
 
 
 def load_models():
     """Load sentiment and emotion models into memory. Call once at startup."""
-    global sentiment_pipeline, emotion_tokenizer, emotion_model, device
+    global sentiment_pipeline, emotion_tokenizer, emotion_model, toxicity_pipeline, device
 
     device_id = 0 if torch.cuda.is_available() else -1
     device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -50,6 +52,16 @@ def load_models():
         EMOTION_MODEL_PATH
     ).to(device)
     emotion_model.eval()
+
+    print("Loading toxicity model...")
+    toxicity_pipeline = pipeline(
+        "text-classification",
+        model=TOXICITY_MODEL_PATH,
+        truncation=True, max_length=512,
+        device=device_id,
+        top_k=None # Get scores for all labels (toxic vs non-toxic)
+    )
+
     print("Models loaded!")
 
 
@@ -94,3 +106,24 @@ def predict_sentiment_batch(texts: list, batch_size: int = 16) -> list:
 def get_sentiment_pipeline():
     """Returns the loaded sentiment pipeline for use in mixed sentiment detection."""
     return sentiment_pipeline
+
+
+def predict_toxicity_batch(texts: list, batch_size: int = 16) -> list:
+    """
+    Runs toxicity classification.
+    Returns a list of dicts with 'is_toxic' (bool) and 'toxicity_score' (float).
+    """
+    results = toxicity_pipeline(texts, batch_size=batch_size, truncation=True, max_length=512)
+    out = []
+    # `results` is a list of lists because top_k=None returns all label scores
+    for res_list in results:
+        toxic_score = 0.0
+        for label_score in res_list:
+            if label_score["label"] == "toxic":
+                toxic_score = label_score["score"]
+                break
+        out.append({
+            "is_toxic": toxic_score >= 0.985,
+            "toxicity_score": toxic_score
+        })
+    return out

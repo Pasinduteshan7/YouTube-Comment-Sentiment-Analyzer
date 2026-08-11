@@ -1,9 +1,9 @@
-export default function SentimentCards({ sentimentCounts, mixedCount, total }) {
+export default function SentimentCards({ sentimentCounts, mixedCount, toxicCount, total }) {
   const cards = [
     { label: "Positive", count: sentimentCounts.positive, color: "#1D9E75" },
     { label: "Neutral",  count: sentimentCounts.neutral,  color: "#888780" },
     { label: "Negative", count: sentimentCounts.negative, color: "#E24B4A" },
-    { label: "Mixed",    count: mixedCount,               color: "#534AB7" },
+    { label: "Toxic",    count: toxicCount || 0,          color: "#b91c1c" },
   ];
 
   return (

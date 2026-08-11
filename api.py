@@ -29,7 +29,7 @@ load_dotenv()
 # ── local modules ──────────────────────────────────────────────────────
 from schemas import AnalysisRequest, ChannelAnalysisRequest
 from models import (
-    load_models, predict_emotions_batch, predict_sentiment_batch,
+    load_models, predict_emotions_batch, predict_sentiment_batch, predict_toxicity_batch,
     get_sentiment_pipeline, EMOTION_LABELS, EMOTION_MODEL_PATH,
 )
 from analysis import (
@@ -117,6 +117,11 @@ def run_full_analysis(df: pd.DataFrame, video_info: dict, url: str) -> dict:
     df["emotions"] = [",".join(emo_list) for emo_list in emotion_lists]
     df["emotion"]  = [emo_list[0] for emo_list in emotion_lists]
 
+    # Toxicity analysis
+    toxicity_results      = predict_toxicity_batch(texts)
+    df["is_toxic"]        = [r["is_toxic"] for r in toxicity_results]
+    df["toxicity_score"]  = [round(r["toxicity_score"], 3) for r in toxicity_results]
+
     # Mixed sentiment detection
     sent_pipe = get_sentiment_pipeline()
     mixed_data            = [detect_mixed_sentiment(t, sent_pipe) for t in texts]
@@ -132,6 +137,7 @@ def run_full_analysis(df: pd.DataFrame, video_info: dict, url: str) -> dict:
         "neutral":  int((df["sentiment"] == "neutral").sum()),
         "negative": int((df["sentiment"] == "negative").sum()),
     }
+    toxic_count = int(df["is_toxic"].sum())
     emotion_counts = emotion_counts_from_lists(emotion_lists)
     comments       = df.to_dict(orient="records")
     for i, c in enumerate(comments):
@@ -161,6 +167,7 @@ def run_full_analysis(df: pd.DataFrame, video_info: dict, url: str) -> dict:
         "fingerprint":      fingerprint,
         "conflicted":       conflicted,
         "like_weighted":    like_weighted,
+        "toxic_count":      toxic_count,
         "language_counts":  language_counts,
         "pin_suggestions":  pin_suggestions,
         "timeline":         timeline,
@@ -195,8 +202,8 @@ def last_analysis():
     if df.empty:
         return empty
 
-    # Replace NaN with None for JSON compliance
-    df = df.where(pd.notna(df), None)
+    # Ensure object dtype so NaN can be replaced by None
+    df = df.astype(object).where(pd.notna(df), None)
 
     for col in ["is_mixed", "part1_text", "part1_sentiment", "part2_text", "part2_sentiment"]:
         if col not in df.columns:
@@ -242,6 +249,7 @@ def last_analysis():
         "fingerprint":      fingerprint,
         "conflicted":       conflicted,
         "like_weighted":    like_weighted,
+        "toxic_count":      int(df["is_toxic"].sum()) if "is_toxic" in df.columns else 0,
         "language_counts":  language_counts,
         "pin_suggestions":  pin_suggestions,
     }
