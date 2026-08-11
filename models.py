@@ -7,7 +7,7 @@ api.py and analyser.py.
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 
-SENTIMENT_MODEL_PATH = "lxyuan/distilbert-base-multilingual-cased-sentiments-student"
+SENTIMENT_MODEL_PATH = "cardiffnlp/twitter-xlm-roberta-base-sentiment"
 EMOTION_MODEL_PATH   = "./fine-tuned-emotion-model-multilingual"
 
 EMOTION_LABELS = [
