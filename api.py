@@ -36,6 +36,7 @@ from analysis import (
     detect_mixed_sentiment, emotion_counts_from_lists, detect_topics,
     classify_emotional_fingerprint, find_conflicted_comments,
     compute_like_weighted_emotions, find_pin_suggestions, clean_comments,
+    analyze_sentiment_over_time
 )
 from youtube import get_video_id, get_video_info, fetch_channel_videos
 from suggestions import generate_suggestions
@@ -147,6 +148,8 @@ def run_full_analysis(df: pd.DataFrame, video_info: dict, url: str) -> dict:
         fingerprint, conflicted, like_weighted
     )
 
+    timeline        = analyze_sentiment_over_time(df)
+
     return {
         "total":            total,
         "video_info":       video_info,
@@ -160,6 +163,7 @@ def run_full_analysis(df: pd.DataFrame, video_info: dict, url: str) -> dict:
         "like_weighted":    like_weighted,
         "language_counts":  language_counts,
         "pin_suggestions":  pin_suggestions,
+        "timeline":         timeline,
         "df":               df,                  # for MLflow logging / CSV saving
         "emotion_lists":    emotion_lists,        # for channel aggregation
     }

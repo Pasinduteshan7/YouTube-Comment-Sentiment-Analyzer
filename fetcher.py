@@ -67,7 +67,8 @@ def fetch_comments(video_url, max_comments=100):
                 comments.append({
                     "text": s["textDisplay"],
                     "author": s["authorDisplayName"],
-                    "likes": s["likeCount"]
+                    "likes": s["likeCount"],
+                    "publishedAt": s["publishedAt"]
                 })
 
             next_page = res.get("nextPageToken")

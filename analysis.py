@@ -331,3 +331,54 @@ def clean_comments(df) -> "pd.DataFrame":
     if removed > 0:
         print(f"Filtered {removed} low-quality comments ({original_count} -> {len(df)})")
     return df
+
+
+# ── timeline analysis ──────────────────────────────────────────────────
+
+def analyze_sentiment_over_time(df) -> list:
+    """
+    Groups comments by their publication date (YYYY-MM-DD) and aggregates
+    the counts of Positive, Negative, Neutral, and Mixed sentiments per day.
+    Requires 'publishedAt' and 'sentiment' columns.
+    Returns a sorted list of dicts suitable for frontend recharts visualization.
+    """
+    import pandas as pd
+
+    if "publishedAt" not in df.columns or df.empty:
+        return []
+
+    # Ensure 'publishedAt' is valid and convert to string 'YYYY-MM-DD'
+    try:
+        # The YouTube API format is typically '2023-11-28T12:00:00Z'
+        df["date"] = pd.to_datetime(df["publishedAt"]).dt.strftime('%Y-%m-%d')
+    except Exception as e:
+        print(f"Timeline parsing error: {e}")
+        return []
+
+    # If is_mixed exists, we should treat sentiment as "mixed" for those rows
+    if "is_mixed" in df.columns:
+        # Create a temporary column for timeline aggregation
+        df["timeline_sentiment"] = df.apply(
+            lambda row: "mixed" if row.get("is_mixed") else row.get("sentiment", "neutral"), axis=1
+        )
+    else:
+        df["timeline_sentiment"] = df["sentiment"]
+
+    # Group by date and sentiment
+    counts = df.groupby(["date", "timeline_sentiment"]).size().unstack(fill_value=0)
+
+    # Convert to list of dicts
+    timeline = []
+    for date, row in counts.iterrows():
+        timeline.append({
+            "date": date,
+            "positive": int(row.get("positive", 0)),
+            "negative": int(row.get("negative", 0)),
+            "neutral": int(row.get("neutral", 0)),
+            "mixed": int(row.get("mixed", 0)),
+            "total": int(row.sum())
+        })
+
+    # Sort chronologically
+    timeline.sort(key=lambda x: x["date"])
+    return timeline

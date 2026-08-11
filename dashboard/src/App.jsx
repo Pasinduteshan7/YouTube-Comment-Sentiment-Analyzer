@@ -11,6 +11,7 @@ import TopicBreakdown from "./components/TopicBreakdown";
 import CreatorBrief from "./components/CreatorBrief";
 import CommentTable from "./components/CommentTable";
 import ChannelView from "./components/ChannelView";
+import TimelineChart from "./components/TimelineChart";
 
 export default function App() {
   const [url, setUrl] = useState("");
@@ -224,6 +225,8 @@ export default function App() {
           )}
 
           <Charts sentData={sentData} allEmoData={allEmoData} />
+
+          <TimelineChart timeline={data.timeline} />
 
           <TopicBreakdown topics={data.topics} />
 

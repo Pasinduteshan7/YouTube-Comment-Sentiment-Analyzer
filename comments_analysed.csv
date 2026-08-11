@@ -1,109 +1,108 @@
-text,author,likes,language,sentiment,sentiment_score,emotions,emotion,is_mixed,part1_text,part1_sentiment,part2_text,part2_sentiment
+text,author,likes,publishedAt,language,sentiment,sentiment_score,emotions,emotion,is_mixed,part1_text,part1_sentiment,part2_text,part2_sentiment,date,timeline_sentiment
 "Netflixにて2021年秋『範馬刃牙』全世界独占配信決定ッッ！！
 
 公式サイト：https://baki-anime.jp/
-公式Twitter：@baki_anime（https://twitter.com/baki_anime）",@TMSanimeJP,624,et,positive,0.576,"approval,optimism,realization,neutral",approval,False,,,,
-これがいっちゃん好き,@ぜす-i1i,0,ja,positive,0.904,"admiration,approval,excitement,joy,love",admiration,False,,,,
+公式Twitter：@baki_anime（https://twitter.com/baki_anime）",@TMSanimeJP,624,2021-07-29T05:39:36Z,et,neutral,0.727,"approval,optimism,realization,neutral",approval,False,,,,,2021-07-29,neutral
+これがいっちゃん好き,@ぜす-i1i,0,2026-08-09T12:35:23Z,ja,positive,0.811,"admiration,approval,excitement,joy,love",admiration,False,,,,,2026-08-09,positive
 "どいつもこいつも
 ヤベェ奴らとわかるぐらい
-素晴らしいOPです😂",@タピ-h3u,1,ja,positive,0.631,"admiration,amusement,approval,excitement,joy,love",admiration,False,,,,
-筋トレ推奨BGM,@もりかわにごう,1,ja,positive,0.741,"approval,neutral",approval,False,,,,
-刃牙がアメリカ国旗の前で立ってる姿が一国に挑んでる感じがして、個人でアメリカと平和条約を結んでいる父親を追ってる感じで好きです❤,@HealthFat37,0,ja,positive,0.882,"admiration,approval,excitement,joy,love",admiration,False,,,,
-これ聴きながら打つRushが最高に気持ちいい,@るぅらぁー,0,ja,positive,0.651,"admiration,approval,excitement,joy,love",admiration,False,,,,
-カモミール・レッセンってよく考えたらめちゃくちゃ強いな,@占拠ドラマ大好き-v8t,0,ja,positive,0.777,"anger,annoyance,disappointment,disapproval,realization,neutral",anger,False,,,,
-Melhor opning de baki,@gabrielbarbosa3832,0,no,positive,0.808,"admiration,approval,neutral",admiration,False,,,,
-今日これ聴きながら3500枚出たから刃牙スロ卒業,@user-ku4xv2ox1m,0,ja,positive,0.498,"admiration,approval,excitement,joy,optimism,pride,realization,neutral",admiration,False,,,,
-このopバキシリーズで1番好き,@shinakadaayo,0,ja,positive,0.889,"admiration,approval,excitement,joy,love",admiration,False,,,,
-スロットのボーナスでこれ流れるのめっちゃテンションあがる,@fy-lu1hb,1,ja,positive,0.486,"approval,realization,neutral",approval,False,,,,
-戻ってきた者はいないか,@だが断る-i3l,66,ja,negative,0.434,"confusion,curiosity,realization,neutral",confusion,False,,,,
-個人的にマウスが腕広げるシーン好き,@占拠ドラマ大好き-v8t,3,ja,positive,0.806,"admiration,approval,excitement,joy,love",admiration,False,,,,
-これ聴きながら筋トレしてる人は俺だけじゃないはず,@ハルート-y8z,5,ja,negative,0.439,"approval,disappointment,disapproval,realization,neutral",approval,False,,,,
-ダンダダンのアレ歌ってる人か,@山田太郎-i7o,0,ja,positive,0.608,"confusion,curiosity,neutral",confusion,False,,,,
-1:02 omg,@DDDenzel2,0,sv,positive,0.421,"approval,realization,neutral",approval,False,,,,
+素晴らしいOPです😂",@タピ-h3u,1,2026-06-29T20:20:55Z,ja,positive,0.879,"admiration,amusement,approval,excitement,joy,love",admiration,False,,,,,2026-06-29,positive
+筋トレ推奨BGM,@もりかわにごう,1,2026-06-15T10:49:03Z,ja,neutral,0.501,"approval,neutral",approval,False,,,,,2026-06-15,neutral
+刃牙がアメリカ国旗の前で立ってる姿が一国に挑んでる感じがして、個人でアメリカと平和条約を結んでいる父親を追ってる感じで好きです❤,@HealthFat37,0,2026-06-14T11:46:37Z,ja,positive,0.682,"admiration,approval,excitement,joy,love",admiration,False,,,,,2026-06-14,positive
+これ聴きながら打つRushが最高に気持ちいい,@るぅらぁー,0,2026-06-01T13:00:55Z,ja,positive,0.868,"admiration,approval,excitement,joy,love",admiration,False,,,,,2026-06-01,positive
+カモミール・レッセンってよく考えたらめちゃくちゃ強いな,@占拠ドラマ大好き-v8t,0,2026-04-29T04:39:21Z,ja,positive,0.709,"anger,annoyance,disappointment,disapproval,realization,neutral",anger,False,,,,,2026-04-29,positive
+Melhor opning de baki,@gabrielbarbosa3832,0,2026-04-21T18:03:01Z,no,positive,0.779,"admiration,approval,neutral",admiration,False,,,,,2026-04-21,positive
+今日これ聴きながら3500枚出たから刃牙スロ卒業,@user-ku4xv2ox1m,0,2026-04-19T19:18:55Z,ja,neutral,0.339,"admiration,approval,excitement,joy,optimism,pride,realization,neutral",admiration,False,,,,,2026-04-19,neutral
+このopバキシリーズで1番好き,@shinakadaayo,0,2026-04-02T04:06:06Z,ja,positive,0.77,"admiration,approval,excitement,joy,love",admiration,False,,,,,2026-04-02,positive
+スロットのボーナスでこれ流れるのめっちゃテンションあがる,@fy-lu1hb,1,2026-03-14T10:21:38Z,ja,positive,0.663,"approval,realization,neutral",approval,False,,,,,2026-03-14,positive
+戻ってきた者はいないか,@だが断る-i3l,66,2026-02-27T15:30:46Z,ja,neutral,0.517,"confusion,curiosity,realization,neutral",confusion,False,,,,,2026-02-27,neutral
+個人的にマウスが腕広げるシーン好き,@占拠ドラマ大好き-v8t,3,2026-02-18T04:03:50Z,ja,positive,0.67,"admiration,approval,excitement,joy,love",admiration,False,,,,,2026-02-18,positive
+これ聴きながら筋トレしてる人は俺だけじゃないはず,@ハルート-y8z,5,2025-11-01T20:07:29Z,ja,neutral,0.431,"approval,disappointment,disapproval,realization,neutral",approval,False,,,,,2025-11-01,neutral
+ダンダダンのアレ歌ってる人か,@山田太郎-i7o,0,2025-10-31T21:45:36Z,ja,neutral,0.666,"confusion,curiosity,neutral",confusion,False,,,,,2025-10-31,neutral
+1:02 omg,@DDDenzel2,0,2025-10-30T02:51:39Z,sv,positive,0.395,"approval,realization,neutral",approval,False,,,,,2025-10-30,positive
 "1:11ここ放送当時から今の今まで若い頃の勇次郎かと思ったけど刃牙か
-マジでそっくりになってるの個人的に嬉しい",@生きる義務敗,10,ja,positive,0.416,"admiration,amusement,approval,caring,excitement,gratitude,joy,love,realization,relief",admiration,False,,,,
-ちょっとジョジョの奇妙な冒険四部味あるオープニング,@極太第一主義,0,ja,positive,0.833,"admiration,disappointment,disgust,embarrassment,excitement,fear,realization,surprise,neutral",admiration,False,,,,
-80年代後半アニメっぽい,@もりかわにごう,1,ja,positive,0.591,"approval,realization,neutral",approval,False,,,,
-so beautiful voice ❤,@STOXIU,0,ro,positive,0.95,"admiration,approval,love",admiration,False,,,,
-Best I swear XDDDDDDDDDDDD,@harutop1,1,de,positive,0.803,"admiration,approval,desire,excitement,joy,love,optimism,neutral",admiration,False,,,,
-0:59 ここ笑う,@adgjmptw523,1,ja,positive,0.753,"amusement,excitement,joy",amusement,False,,,,
+マジでそっくりになってるの個人的に嬉しい",@生きる義務敗,10,2025-10-24T17:50:29Z,ja,positive,0.826,"admiration,amusement,approval,caring,excitement,gratitude,joy,love,realization,relief",admiration,False,,,,,2025-10-24,positive
+ちょっとジョジョの奇妙な冒険四部味あるオープニング,@極太第一主義,0,2025-10-09T02:38:48Z,ja,positive,0.495,"admiration,disappointment,disgust,embarrassment,excitement,fear,realization,surprise,neutral",admiration,False,,,,,2025-10-09,positive
+80年代後半アニメっぽい,@もりかわにごう,1,2025-09-11T16:39:52Z,ja,neutral,0.587,"approval,realization,neutral",approval,False,,,,,2025-09-11,neutral
+so beautiful voice ❤,@STOXIU,0,2025-09-05T15:32:24Z,ro,positive,0.907,"admiration,approval,love",admiration,False,,,,,2025-09-05,positive
+Best I swear XDDDDDDDDDDDD,@harutop1,1,2025-08-03T04:44:29Z,de,positive,0.82,"admiration,approval,desire,excitement,joy,love,optimism,neutral",admiration,False,,,,,2025-08-03,positive
+0:59 ここ笑う,@adgjmptw523,1,2025-07-21T00:28:46Z,ja,negative,0.633,"amusement,excitement,joy",amusement,False,,,,,2025-07-21,negative
 "範馬刃牙 OP
 GRANRODEO『Treasure Pleasure』
 
-外連味とハッタリが効いてる範馬刃牙にピッタリの最高にアガる主題歌で大好き！！！！",@まるめ-n6n,0,ja,positive,0.921,"admiration,approval,excitement,joy,love",admiration,False,,,,
-かっこよすぎる,@user-j9p5h,1,ja,positive,0.72,"admiration,approval,excitement,joy,love",admiration,False,,,,
-これカラオケで歌うと事故るんだよな,@お尻丸出し下痢侍,4,ja,positive,0.626,"annoyance,disappointment,disapproval,disgust,embarrassment,realization,remorse,sadness,neutral",annoyance,False,,,,
-男と生まれたからには…あれ？,@Asaroku_Jipang,43,ja,negative,0.366,"confusion,curiosity,realization,surprise,neutral",confusion,False,,,,
-歌の才能もあるとかジャン最高かよ😂😂😂😂😂,@あさ-m4h,1,ja,positive,0.623,"admiration,amusement,approval,gratitude,joy,love",admiration,False,,,,
-"this mid series opening is so awesome, it can prolly make people who've never seen it to jump in. and you won't be disappointed",@ghostfacedude,1,en,positive,0.848,"admiration,approval,excitement,joy,optimism",admiration,False,,,,
-1:14 イケメンすぎる,@jony759,0,ja,positive,0.606,"admiration,approval,excitement,joy,love",admiration,False,,,,
-マウスがかっこいい,@QI35ls,0,ja,positive,0.504,"admiration,approval,excitement,joy,love",admiration,False,,,,
-0:59 ここ好き,@カジキ-magu6,0,ja,positive,0.896,"admiration,approval,excitement,joy,love",admiration,False,,,,
-げばるめっちゃかっけえ,@榊-l3k,0,ja,positive,0.702,"anger,annoyance,disappointment,disapproval,disgust,neutral",anger,False,,,,
-1:17 くっそイケメンすぎてつらいw,@aine_asuka,2,ja,positive,0.587,"annoyance,disappointment,disapproval,realization,sadness,neutral",annoyance,False,,,,
-banger,@oznerolnavi3772,0,id,positive,0.545,"annoyance,neutral",annoyance,False,,,,
-ないない、それはない,@ていこくみん628,0,ja,neutral,0.473,"anger,annoyance,approval,disappointment,disapproval,realization,neutral",anger,False,,,,
-ゲバルよかったなぁ😊,@田中-w6b,1,ja,positive,0.416,"admiration,amusement,approval,excitement,gratitude,joy,love",admiration,False,,,,
-もう3年か,@タップ-o5o,3,ja,positive,0.362,"curiosity,realization,neutral",curiosity,False,,,,
-0:44 my fav part,@mikogamingmg9794,0,sv,positive,0.463,"admiration,approval,excitement,joy,love",admiration,False,,,,
-刃牙シリーズのopどれも好きだけど、これが一番すきだ,@reijinsou,2,ja,positive,0.853,"admiration,approval,excitement,joy,love",admiration,False,,,,
-Tunometecabrasarabambiche 🗿,@brianjoseoropezarangel5797,0,es,positive,0.532,neutral,neutral,False,,,,
-Baki in the begining cosplaying jotaro,@Vivian_hk,1,en,positive,0.502,"approval,neutral",approval,False,,,,
-個人的に格闘アニメのOPで歴代1位がこれ。EDの1位はキン肉マン完璧超人始祖編。,@fg-tr8rx,4,ja,positive,0.786,"admiration,approval,neutral",admiration,False,,,,
-刃牙らしいハッタリの効き具合と曲テンションが合いすぎてるのよな,@ujiyaaaas,5,ja,positive,0.644,"approval,disapproval,realization,neutral",approval,False,,,,
-他の刃牙のopも好きだけど、これが一番刃牙っぽいね,@YU_GRAFFITI,8,ja,positive,0.905,"admiration,approval,excitement,joy,love",admiration,False,,,,
-正直刃牙の中では1番好きなオープニング,@sukechika-genji.BANZAI,11,ja,positive,0.813,"admiration,approval,excitement,joy,love,neutral",admiration,False,,,,
-ゲバルがカッコ良すぎる,@ta-radonn,1,ja,positive,0.619,"admiration,approval,excitement,love",admiration,False,,,,
-神イントロなのに神サビなのかよ！,@さぶ山,2,ja,positive,0.717,"confusion,curiosity,surprise,neutral",confusion,False,,,,
-あり得ないねが笑えるのにカッコいいのなんなの,@D2005-q6t,3,ja,positive,0.542,"amusement,excitement,joy",amusement,False,,,,
-単純な顔のイケメンさで言ったらケバルぶっちぎりなんよな,@エボルト-0.1,3,ja,positive,0.525,"anger,annoyance,disappointment,disapproval,disgust,neutral",anger,False,,,,
-ほんとうかっこいいわ,@JoJo1000days,2,ja,positive,0.678,"admiration,approval,excitement,joy,love",admiration,False,,,,
-ゲバルとは何だったのか。刃牙らへんに出てくるかな,@Oboronatsuki1,2,ja,negative,0.497,"confusion,curiosity,neutral",confusion,False,,,,
-1番動いてるのがオリバかつ筋肉肥大化シーンで草,@おちゃらけびすけっと,0,ja,positive,0.434,"approval,realization,neutral",approval,False,,,,
-あほうがー！！,@taroumura,0,ja,positive,0.708,"excitement,neutral",excitement,False,,,,
-一番すきなOP,@risotto3371,5,ja,positive,0.593,"admiration,approval,excitement,joy,love",admiration,False,,,,
-こっちも滅茶苦茶カッコイイな,@zunzun99911,1,ja,positive,0.495,"anger,annoyance,disappointment,disapproval,disgust,realization,sadness,neutral",anger,False,,,,
+外連味とハッタリが効いてる範馬刃牙にピッタリの最高にアガる主題歌で大好き！！！！",@まるめ-n6n,0,2025-07-07T18:07:04Z,ja,positive,0.91,"admiration,approval,excitement,joy,love",admiration,False,,,,,2025-07-07,positive
+かっこよすぎる,@user-j9p5h,1,2025-07-01T09:34:48Z,ja,positive,0.854,"admiration,approval,excitement,joy,love",admiration,False,,,,,2025-07-01,positive
+これカラオケで歌うと事故るんだよな,@お尻丸出し下痢侍,4,2025-06-26T23:58:31Z,ja,negative,0.859,"annoyance,disappointment,disapproval,disgust,embarrassment,realization,remorse,sadness,neutral",annoyance,False,,,,,2025-06-26,negative
+男と生まれたからには…あれ？,@Asaroku_Jipang,43,2025-05-31T07:15:51Z,ja,neutral,0.569,"confusion,curiosity,realization,surprise,neutral",confusion,False,,,,,2025-05-31,neutral
+歌の才能もあるとかジャン最高かよ😂😂😂😂😂,@あさ-m4h,1,2025-05-29T08:29:03Z,ja,positive,0.865,"admiration,amusement,approval,gratitude,joy,love",admiration,False,,,,,2025-05-29,positive
+"this mid series opening is so awesome, it can prolly make people who've never seen it to jump in. and you won't be disappointed",@ghostfacedude,1,2025-05-28T19:48:12Z,en,positive,0.879,"admiration,approval,excitement,joy,optimism",admiration,False,,,,,2025-05-28,positive
+1:14 イケメンすぎる,@jony759,0,2025-03-27T02:23:23Z,ja,positive,0.854,"admiration,approval,excitement,joy,love",admiration,False,,,,,2025-03-27,positive
+マウスがかっこいい,@QI35ls,0,2025-03-21T04:49:27Z,ja,positive,0.885,"admiration,approval,excitement,joy,love",admiration,False,,,,,2025-03-21,positive
+0:59 ここ好き,@カジキ-magu6,0,2025-02-28T16:29:50Z,ja,positive,0.621,"admiration,approval,excitement,joy,love",admiration,False,,,,,2025-02-28,positive
+げばるめっちゃかっけえ,@榊-l3k,0,2025-02-14T15:52:21Z,ja,positive,0.695,"anger,annoyance,disappointment,disapproval,disgust,neutral",anger,False,,,,,2025-02-14,positive
+1:17 くっそイケメンすぎてつらいw,@aine_asuka,2,2025-02-14T06:21:25Z,ja,negative,0.775,"annoyance,disappointment,disapproval,realization,sadness,neutral",annoyance,False,,,,,2025-02-14,negative
+banger,@oznerolnavi3772,0,2025-01-12T22:54:32Z,id,positive,0.682,"annoyance,neutral",annoyance,False,,,,,2025-01-12,positive
+ないない、それはない,@ていこくみん628,0,2024-12-16T11:29:22Z,ja,negative,0.584,"anger,annoyance,approval,disappointment,disapproval,realization,neutral",anger,False,,,,,2024-12-16,negative
+ゲバルよかったなぁ😊,@田中-w6b,1,2024-10-26T08:53:29Z,ja,positive,0.93,"admiration,amusement,approval,excitement,gratitude,joy,love",admiration,False,,,,,2024-10-26,positive
+もう3年か,@タップ-o5o,3,2024-09-23T01:11:45Z,ja,neutral,0.523,"curiosity,realization,neutral",curiosity,False,,,,,2024-09-23,neutral
+0:44 my fav part,@mikogamingmg9794,0,2024-09-21T11:28:03Z,sv,positive,0.764,"admiration,approval,excitement,joy,love",admiration,False,,,,,2024-09-21,positive
+刃牙シリーズのopどれも好きだけど、これが一番すきだ,@reijinsou,2,2024-09-18T00:34:49Z,ja,positive,0.897,"admiration,approval,excitement,joy,love",admiration,False,,,,,2024-09-18,positive
+Tunometecabrasarabambiche 🗿,@brianjoseoropezarangel5797,0,2024-09-14T03:26:05Z,es,negative,0.474,neutral,neutral,False,,,,,2024-09-14,negative
+Baki in the begining cosplaying jotaro,@Vivian_hk,1,2024-09-02T00:00:01Z,en,neutral,0.572,"approval,neutral",approval,False,,,,,2024-09-02,neutral
+個人的に格闘アニメのOPで歴代1位がこれ。EDの1位はキン肉マン完璧超人始祖編。,@fg-tr8rx,4,2024-08-23T14:07:05Z,ja,positive,0.545,"admiration,approval,neutral",admiration,False,,,,,2024-08-23,positive
+刃牙らしいハッタリの効き具合と曲テンションが合いすぎてるのよな,@ujiyaaaas,5,2024-07-18T10:57:25Z,ja,positive,0.516,"approval,disapproval,realization,neutral",approval,False,,,,,2024-07-18,positive
+他の刃牙のopも好きだけど、これが一番刃牙っぽいね,@YU_GRAFFITI,8,2024-05-27T13:20:36Z,ja,positive,0.467,"admiration,approval,excitement,joy,love",admiration,False,,,,,2024-05-27,positive
+正直刃牙の中では1番好きなオープニング,@sukechika-genji.BANZAI,11,2024-05-19T07:40:32Z,ja,positive,0.881,"admiration,approval,excitement,joy,love,neutral",admiration,False,,,,,2024-05-19,positive
+ゲバルがカッコ良すぎる,@ta-radonn,1,2024-05-19T06:32:12Z,ja,positive,0.909,"admiration,approval,excitement,love",admiration,False,,,,,2024-05-19,positive
+神イントロなのに神サビなのかよ！,@さぶ山,2,2024-05-18T10:19:57Z,ja,negative,0.382,"confusion,curiosity,surprise,neutral",confusion,False,,,,,2024-05-18,negative
+あり得ないねが笑えるのにカッコいいのなんなの,@D2005-q6t,3,2024-05-18T09:55:37Z,ja,positive,0.687,"amusement,excitement,joy",amusement,False,,,,,2024-05-18,positive
+単純な顔のイケメンさで言ったらケバルぶっちぎりなんよな,@エボルト-0.1,3,2024-05-10T16:24:53Z,ja,negative,0.614,"anger,annoyance,disappointment,disapproval,disgust,neutral",anger,False,,,,,2024-05-10,negative
+ほんとうかっこいいわ,@JoJo1000days,2,2024-05-01T21:15:20Z,ja,positive,0.89,"admiration,approval,excitement,joy,love",admiration,False,,,,,2024-05-01,positive
+ゲバルとは何だったのか。刃牙らへんに出てくるかな,@Oboronatsuki1,2,2024-02-16T10:28:08Z,ja,neutral,0.698,"confusion,curiosity,neutral",confusion,False,,,,,2024-02-16,neutral
+1番動いてるのがオリバかつ筋肉肥大化シーンで草,@おちゃらけびすけっと,0,2024-01-08T13:50:20Z,ja,negative,0.859,"approval,realization,neutral",approval,False,,,,,2024-01-08,negative
+あほうがー！！,@taroumura,0,2023-12-24T01:08:09Z,ja,positive,0.442,"excitement,neutral",excitement,False,,,,,2023-12-24,positive
+一番すきなOP,@risotto3371,5,2023-12-07T07:34:19Z,ja,positive,0.907,"admiration,approval,excitement,joy,love",admiration,False,,,,,2023-12-07,positive
+こっちも滅茶苦茶カッコイイな,@zunzun99911,1,2023-12-02T04:23:52Z,ja,positive,0.868,"anger,annoyance,disappointment,disapproval,disgust,realization,sadness,neutral",anger,False,,,,,2023-12-02,positive
 "なんかボーカルの音が大きいのかな😮 
-PVの方をいつも聴いているからこっちの方は違和感があります。",@wmwmwm1252,1,ja,negative,0.406,"annoyance,confusion,disappointment,disapproval,disgust,realization,sadness,neutral",annoyance,False,,,,
-"ark my words, Yujiro vs Baki is going to be one of the most badass fights you can watch.",@Gabriel-sfn8,0,en,negative,0.455,"admiration,approval,desire,excitement,optimism,neutral",admiration,False,,,,
-1:13 Is so good,@3NZ0_242,0,so,positive,0.953,"admiration,approval,excitement",admiration,False,,,,
-1:14 かっこよ,@レナ-s2o,1,ja,positive,0.627,"admiration,approval,excitement",admiration,False,,,,
-The Great Prison Arc.,@MossHouse,1,en,negative,0.421,"admiration,approval,neutral",admiration,False,,,,
-"Tudo começou a dar errado a partir daqui, animação horrível, umas das piores que eu já vi na vida, e abertura chata, só a música salva, na última temporada lançada a música consegue ser pior que a animação.",@joaovictoralves3054,1,pt,positive,0.586,"anger,annoyance,disappointment,disapproval,disgust,embarrassment,fear,nervousness,realization,sadness,neutral",anger,False,,,,
-刃牙のopでいっちゃん好き,@プロトタイプ-k7x,4,ja,positive,0.877,"admiration,approval,excitement,joy,love",admiration,False,,,,
+PVの方をいつも聴いているからこっちの方は違和感があります。",@wmwmwm1252,1,2023-11-29T07:30:37Z,ja,negative,0.751,"annoyance,confusion,disappointment,disapproval,disgust,realization,sadness,neutral",annoyance,False,,,,,2023-11-29,negative
+"ark my words, Yujiro vs Baki is going to be one of the most badass fights you can watch.",@Gabriel-sfn8,0,2023-11-10T16:30:59Z,en,positive,0.9,"admiration,approval,desire,excitement,optimism,neutral",admiration,False,,,,,2023-11-10,positive
+1:13 Is so good,@3NZ0_242,0,2023-10-23T15:37:06Z,so,positive,0.891,"admiration,approval,excitement",admiration,False,,,,,2023-10-23,positive
+1:14 かっこよ,@レナ-s2o,1,2023-09-24T13:15:05Z,ja,positive,0.865,"admiration,approval,excitement",admiration,False,,,,,2023-09-24,positive
+The Great Prison Arc.,@MossHouse,1,2023-09-24T11:52:49Z,en,neutral,0.456,"admiration,approval,neutral",admiration,False,,,,,2023-09-24,neutral
+"Tudo começou a dar errado a partir daqui, animação horrível, umas das piores que eu já vi na vida, e abertura chata, só a música salva, na última temporada lançada a música consegue ser pior que a animação.",@joaovictoralves3054,1,2023-09-03T03:47:29Z,pt,negative,0.962,"anger,annoyance,disappointment,disapproval,disgust,embarrassment,fear,nervousness,realization,sadness,neutral",anger,False,,,,,2023-09-03,negative
+刃牙のopでいっちゃん好き,@プロトタイプ-k7x,4,2023-08-24T13:18:13Z,ja,positive,0.838,"admiration,approval,excitement,joy,love",admiration,False,,,,,2023-08-24,positive
 "個人的にこの曲が一番好き。
-次点で哀belive",@Antsubaaaaaaaa,2,ja,positive,0.898,"admiration,approval,excitement,joy,love",admiration,False,,,,
-イナイレっぽいよな,@澤富,1,ja,positive,0.796,"anger,annoyance,disappointment,disapproval,disgust,neutral",anger,False,,,,
-変な奴が3人に増えるシーン好き,@shfffupg7660,5,ja,positive,0.684,"admiration,approval,excitement,joy,love",admiration,False,,,,
-1:09 minha parte favorita.,@leandrolefrujo8500,0,pt,positive,0.948,"admiration,approval,excitement,joy,love",admiration,False,,,,
-Sinto uma energia pra lutar tão grande!!,@MOISESGAIA-q1k,0,pt,positive,0.898,"admiration,approval,caring,desire,excitement,joy,love,optimism,pride,relief,surprise,neutral",admiration,False,,,,
-今んとこ歴代神OPトップ,@にわとり-c6i,305,ja,positive,0.632,"admiration,approval,excitement,joy,realization,neutral",admiration,False,,,,
-ゲバル好きだからもっと活躍してほしかった,@rr-nm6gp,1,ja,positive,0.816,"admiration,approval,caring,desire,excitement,joy,love,optimism,realization,neutral",admiration,False,,,,
-0:59 金田ァァァァァァ！！！,@elfilisfecto4658,3,ja,positive,0.477,"amusement,excitement,joy,realization,surprise",amusement,False,,,,
-ゲバルめっちゃカッケェな,@Otuy-q2m,22,ja,positive,0.677,"admiration,amusement,excitement,joy,surprise",admiration,False,,,,
-泥メイクverのゲバルマジでかっこいい,@そぼろ嫌い,2,ja,positive,0.551,"admiration,approval,excitement,joy,love",admiration,False,,,,
-ずっと「ありえないね」だと思ってた。「ありがたいね」なんだ😂😂,@kobito3164,1,ja,positive,0.576,"admiration,amusement,approval,disapproval,gratitude,joy,realization,relief",admiration,False,,,,
-ピクルウォーズ編でGRANRODEOリストラされるの悲しい,@にょるる,5,ja,negative,0.895,"annoyance,caring,disappointment,disapproval,realization,remorse,sadness,neutral",annoyance,False,,,,
-マウスいらんやろ！笑,@グラップラーコバヤシ,2,ja,positive,0.679,"amusement,excitement,joy",amusement,False,,,,
-A que hora regresa este gran anime,@shirokuri_oficial,0,pt,positive,0.835,"admiration,confusion,curiosity,excitement,surprise,neutral",admiration,False,,,,
-"The opening of Baki Hanma: Son of the Ogre (2021) is very good (but inferior to its unattainable and insurmountable predecessor), but what stands out the most is the more relaxed and more stylistic style thanks to Granrodeo. By the way, did Jun Guevara go Super Saiyan God or what? 1:07 XD",@juandiegoramirezvalencia8086,1,en,positive,0.698,"admiration,approval,confusion,curiosity,gratitude",admiration,False,,,,
-Soy ese,@efrenzurita5440,2,es,positive,0.477,"approval,realization,neutral",approval,False,,,,
-エロゲのop並に止め&スライドの多用してるの草,@youma5872,6,ja,negative,0.425,"approval,realization,neutral",approval,False,,,,
+次点で哀belive",@Antsubaaaaaaaa,2,2023-08-23T01:37:51Z,ja,positive,0.844,"admiration,approval,excitement,joy,love",admiration,False,,,,,2023-08-23,positive
+イナイレっぽいよな,@澤富,1,2023-08-19T18:08:10Z,ja,negative,0.41,"anger,annoyance,disappointment,disapproval,disgust,neutral",anger,False,,,,,2023-08-19,negative
+変な奴が3人に増えるシーン好き,@shfffupg7660,5,2023-08-09T00:01:27Z,ja,negative,0.474,"admiration,approval,excitement,joy,love",admiration,False,,,,,2023-08-09,negative
+1:09 minha parte favorita.,@leandrolefrujo8500,0,2023-08-08T20:37:13Z,pt,positive,0.846,"admiration,approval,excitement,joy,love",admiration,False,,,,,2023-08-08,positive
+Sinto uma energia pra lutar tão grande!!,@MOISESGAIA-q1k,0,2023-07-11T19:01:21Z,pt,positive,0.787,"admiration,approval,caring,desire,excitement,joy,love,optimism,pride,relief,surprise,neutral",admiration,False,,,,,2023-07-11,positive
+今んとこ歴代神OPトップ,@にわとり-c6i,305,2023-07-09T14:50:39Z,ja,positive,0.758,"admiration,approval,excitement,joy,realization,neutral",admiration,False,,,,,2023-07-09,positive
+ゲバル好きだからもっと活躍してほしかった,@rr-nm6gp,1,2023-07-09T14:34:46Z,ja,positive,0.671,"admiration,approval,caring,desire,excitement,joy,love,optimism,realization,neutral",admiration,False,,,,,2023-07-09,positive
+0:59 金田ァァァァァァ！！！,@elfilisfecto4658,3,2023-07-07T18:28:33Z,ja,neutral,0.524,"amusement,excitement,joy,realization,surprise",amusement,False,,,,,2023-07-07,neutral
+ゲバルめっちゃカッケェな,@Otuy-q2m,22,2023-07-06T03:49:03Z,ja,positive,0.838,"admiration,amusement,excitement,joy,surprise",admiration,False,,,,,2023-07-06,positive
+泥メイクverのゲバルマジでかっこいい,@そぼろ嫌い,2,2023-06-22T01:32:49Z,ja,positive,0.843,"admiration,approval,excitement,joy,love",admiration,False,,,,,2023-06-22,positive
+ずっと「ありえないね」だと思ってた。「ありがたいね」なんだ😂😂,@kobito3164,1,2023-06-21T00:46:18Z,ja,positive,0.734,"admiration,amusement,approval,disapproval,gratitude,joy,realization,relief",admiration,False,,,,,2023-06-21,positive
+ピクルウォーズ編でGRANRODEOリストラされるの悲しい,@にょるる,5,2023-05-19T09:21:15Z,ja,negative,0.938,"annoyance,caring,disappointment,disapproval,realization,remorse,sadness,neutral",annoyance,False,,,,,2023-05-19,negative
+マウスいらんやろ！笑,@グラップラーコバヤシ,2,2023-04-23T11:16:42Z,ja,neutral,0.429,"amusement,excitement,joy",amusement,False,,,,,2023-04-23,neutral
+A que hora regresa este gran anime,@shirokuri_oficial,0,2023-04-20T02:20:13Z,pt,positive,0.68,"admiration,confusion,curiosity,excitement,surprise,neutral",admiration,False,,,,,2023-04-20,positive
+"The opening of Baki Hanma: Son of the Ogre (2021) is very good (but inferior to its unattainable and insurmountable predecessor), but what stands out the most is the more relaxed and more stylistic style thanks to Granrodeo. By the way, did Jun Guevara go Super Saiyan God or what? 1:07 XD",@juandiegoramirezvalencia8086,1,2023-01-25T03:40:18Z,en,positive,0.374,"admiration,approval,confusion,curiosity,gratitude",admiration,False,,,,,2023-01-25,positive
+Soy ese,@efrenzurita5440,2,2023-01-08T09:12:24Z,es,neutral,0.704,"approval,realization,neutral",approval,False,,,,,2023-01-08,neutral
+エロゲのop並に止め&スライドの多用してるの草,@youma5872,6,2022-12-20T06:24:33Z,ja,negative,0.868,"approval,realization,neutral",approval,False,,,,,2022-12-20,negative
 "やっぱバキのopはこれくらい元気でなくちゃ。
-にしてもカッコいい。",@一般社会人-w9z,19,ja,negative,0.39,"admiration,approval,caring,desire,excitement,joy,optimism,realization,relief,neutral",admiration,False,,,,
-1:16 When you realize you should have kept your name as Baki Hanma when playing Persona 5,@aryamanbhandari8536,2,en,positive,0.484,"approval,disappointment,realization,surprise,neutral",approval,False,,,,
-このクセキレッキレなのが好みなのです...,@ReReRe1202,3,ja,positive,0.911,"anger,annoyance,disappointment,disapproval,disgust,fear,neutral",anger,False,,,,
-La escuchas mientras entrenas,@xkurereyden7421,2,es,positive,0.42,"approval,caring,realization,neutral",approval,False,,,,
+にしてもカッコいい。",@一般社会人-w9z,19,2022-12-15T14:51:10Z,ja,positive,0.889,"admiration,approval,caring,desire,excitement,joy,optimism,realization,relief,neutral",admiration,False,,,,,2022-12-15,positive
+1:16 When you realize you should have kept your name as Baki Hanma when playing Persona 5,@aryamanbhandari8536,2,2022-12-13T06:40:01Z,en,neutral,0.644,"approval,disappointment,realization,surprise,neutral",approval,False,,,,,2022-12-13,neutral
+このクセキレッキレなのが好みなのです...,@ReReRe1202,3,2022-11-19T06:23:35Z,ja,positive,0.702,"anger,annoyance,disappointment,disapproval,disgust,fear,neutral",anger,False,,,,,2022-11-19,positive
+La escuchas mientras entrenas,@xkurereyden7421,2,2022-11-13T04:47:45Z,es,neutral,0.771,"approval,caring,realization,neutral",approval,False,,,,,2022-11-13,neutral
 "Oliva claims to be the freest man but he continues to live in jail, as far as I am concerned the country has him on lockdown. If he is as free as he says because he does not get out of that ugly jail and go live in a mansion with Maria, he is only the freest in the United States.
-Yujiro is the freest man in the world.",@oargelguapo659,2,en,positive,0.409,"admiration,annoyance,approval,disapproval,realization,neutral",admiration,True,Oliva claims to be the freest man but,positive,"he continues to live in jail, as far as I am concerned the country has him on lockdown. If he is as free as he says because he does not get out of that ugly jail and go live in a mansion with Maria, he is only the freest in the United States.
-Yujiro is the freest man in the world.",negative
+Yujiro is the freest man in the world.",@oargelguapo659,2,2022-11-03T08:10:57Z,en,negative,0.82,"admiration,annoyance,approval,disapproval,realization,neutral",admiration,False,,,,,2022-11-03,negative
 "かっこいいんだけど、
 もう
-何言ってるか分からんｯﾂﾂﾂ！",@うえちゃん_uechan,2,ja,negative,0.379,"admiration,amusement,approval,excitement,joy,love",admiration,False,,,,
-0:35 嘘は言ってない,@リンドり刹那オーバードライブ,17,ja,negative,0.561,"annoyance,approval,disappointment,disapproval,realization,neutral",annoyance,False,,,,
-1:09 el cgi actual de baki es brutal,@Botardoo,0,ca,negative,0.817,"anger,annoyance,disappointment,disapproval,disgust,embarrassment,fear,sadness,neutral",anger,False,,,,
-And For Dispute And Dad - Me,@xller18,0,de,positive,0.532,"annoyance,approval,disappointment,disapproval,realization,neutral",annoyance,False,,,,
-ちょっと待って！？男と生まれたからには入ってないやん！？,@神崎飛鳥-e2q,3,ja,positive,0.413,"confusion,curiosity,realization,surprise,neutral",confusion,False,,,,
+何言ってるか分からんｯﾂﾂﾂ！",@うえちゃん_uechan,2,2022-10-30T10:30:42Z,ja,negative,0.468,"admiration,amusement,approval,excitement,joy,love",admiration,False,,,,,2022-10-30,negative
+0:35 嘘は言ってない,@リンドり刹那オーバードライブ,17,2022-10-12T20:37:02Z,ja,neutral,0.627,"annoyance,approval,disappointment,disapproval,realization,neutral",annoyance,False,,,,,2022-10-12,neutral
+1:09 el cgi actual de baki es brutal,@Botardoo,0,2022-09-30T14:17:25Z,ca,positive,0.65,"anger,annoyance,disappointment,disapproval,disgust,embarrassment,fear,sadness,neutral",anger,False,,,,,2022-09-30,positive
+And For Dispute And Dad - Me,@xller18,0,2022-09-28T01:29:09Z,de,neutral,0.763,"annoyance,approval,disappointment,disapproval,realization,neutral",annoyance,False,,,,,2022-09-28,neutral
+ちょっと待って！？男と生まれたからには入ってないやん！？,@神崎飛鳥-e2q,3,2022-09-25T02:32:27Z,ja,negative,0.52,"confusion,curiosity,realization,surprise,neutral",confusion,False,,,,,2022-09-25,negative
 "Akogareteta sonzai dakedo itsu shika mokuhyou ni kawatteta
 Raibaru mokuzen yannai to ikenai
 Everybody fight it now oh yeah
@@ -164,219 +163,5 @@ Let’s go! doshigatai ne
 Let’s go! adorenarin
 Ato kara ato kara fukidasu ze
 Fumidasu ippo no sono saki de
-Knock down",@brag_locket9372,2,sw,negative,0.442,"annoyance,confusion,curiosity,neutral",annoyance,False,,,,
-マウスの表情がそれぞれ違うところ好き。,@梟ヶ谷鬼丸,1,ja,positive,0.551,"admiration,approval,excitement,joy,love,neutral",admiration,False,,,,
-1:17        ma nigga grown now he has da stare of his father,@BenS0n-17,1,en,negative,0.656,"admiration,amusement,approval,excitement,joy,realization,neutral",admiration,False,,,,
-曲はいいけど、映像ださいな。残念,@86太郎-z6c,1,ja,negative,0.508,"approval,caring,disappointment,disapproval,embarrassment,gratitude,realization,remorse,sadness,neutral",approval,False,,,,
-I love the seductive sax the moment Maria appears at 0:34,@artaum5635,2,en,positive,0.749,"admiration,approval,excitement,joy,love",admiration,False,,,,
-ありえねぇよなのとこ好きw,@ヤヴァイ店長,8,ja,positive,0.897,"admiration,approval,excitement,joy,love",admiration,False,,,,
-baki is becoming a stronger,@jehnzgaming6540,2,en,positive,0.611,"admiration,approval,caring,excitement,joy,optimism,realization,neutral",admiration,False,,,,
-Song so good made prison look like amusement park.,@Popotato7777,1,et,positive,0.908,"admiration,approval,love",admiration,False,,,,
-朝起きた時に見るのが日課になって,@鉛筆-v5t,4,ja,positive,0.41,"approval,realization,neutral",approval,False,,,,
-今までの刃牙のオープニングの中で結構すきかも,@飛田龍之介,2,ja,positive,0.477,"approval,caring,optimism,realization,neutral",approval,False,,,,
-オリバの筋肉が爆発するシーン何度観てもAKIRA,@白-o3s,90,ja,negative,0.589,"approval,realization,neutral",approval,False,,,,
-やっぱ純ゲバルが一番かっこいいわ,@user-gatti1984,16,ja,positive,0.624,"admiration,approval,excitement,love",admiration,False,,,,
-Túnometecabrasarabambiche,@gatovapo,3,es,positive,0.552,neutral,neutral,False,,,,
-01:11 ここの刃牙の後ろ姿勇次郎そっくりで好き,@redpanther1049,105,ja,positive,0.874,"admiration,approval,excitement,joy,love",admiration,False,,,,
-"バキシリーズの歌で一番好きw
-オリバの肉が開放されるとこグロすぎw",@geo1212,1,ja,positive,0.924,"admiration,anger,annoyance,disgust,joy,love",admiration,False,,,,
-この人もかなりの歌うまなのに、名前上がらないよね。,@1akira218,0,ja,neutral,0.353,"admiration,annoyance,approval,disapproval,neutral",admiration,False,,,,
-ピクル編OPに期待ッッッ！！,@カキピー-h5i,6,ja,positive,0.566,"approval,desire,excitement,joy,optimism,realization,neutral",approval,False,,,,
-1:05の刃牙の顔好きすぎるw,@杉浦-99,8,ja,positive,0.728,"admiration,excitement,joy,love",admiration,False,,,,
-この曲はバキの為にある,@jill6824,2,ja,positive,0.393,"approval,realization,neutral",approval,False,,,,
-"憧れてた存在だけど
-いつしか目標に変わってた
-ライバル目前やんないといけない
-Everybody flght it now, oh
-yeah 
-やっぱり生き甲斐は
-挑戦チャレンジだし
-どこまで行っても果てはナシ
-上には上俺が最上になりゃいい
-果たされそうにない？
-簡単なわけなんてない
-見りゃ分かんだろ？
-見下ろされたって顔にpiss
-掛けられたって
-笑ってやるのさ
-戦ってればプレジャー
-それがトレジャー
-ありがたいね
-ヒマこいてちゃ枯れんだ
-ファイティングカレンダー
-めくり続けたい(意味深)
-Let's Go!!!!アドレナリン
-あとからあとから吹き出るぜ
-Knock down",@えだまめ-w5f,4,ja,negative,0.577,"admiration,amusement,approval,excitement,joy,optimism,realization,relief",admiration,False,,,,
-Introduction likes Break It Out - Stevie Salas. Just me?,@sync000zero,0,en,positive,0.487,"confusion,curiosity,love,neutral",confusion,False,,,,
-0:59 1:13,@allencolevelasco6223,0,unknown,positive,0.505,"approval,realization,neutral",approval,False,,,,
-サビが良くてかっこいいです。,@seven9819,0,ja,positive,0.727,"admiration,approval,excitement,joy,love",admiration,False,,,,
-God I loved this arc so much!! 🔥,@eligamerman,6,en,positive,0.97,"admiration,excitement,joy,love",admiration,False,,,,
-ゲバルめちゃかっこええ,@かさなか-z4d,3,ja,positive,0.676,"admiration,neutral",admiration,False,,,,
-盛り上がり方がとても良い,@dedennnededennne3220,2,ja,positive,0.817,"admiration,approval,excitement,gratitude,joy",admiration,False,,,,
-原作でのゲバルVS 刃牙、今からでも大いに希望します‼ゲバルスピンオフやIFストーリーも断然アリかと。ゲバルの精神力や人格も、地球拳の威力も、もっと評価されて然るべきだと思います‼原作で15年間ご無沙汰は正直ドギツイです(T^T)アニオリでも全然いいし‼,@Cure-AshendiaHesperus-Phosphor,6,ja,positive,0.647,"admiration,approval,caring,desire,excitement,optimism,neutral",admiration,False,,,,
-I bet most of us wanted to see Maria get animated,@mrcrab7167,2,en,positive,0.546,"approval,caring,desire,excitement,love,optimism,neutral",approval,False,,,,
-途中のマリアのカット考えた人天才かよ,@時田シロウ-g9j,14,ja,positive,0.525,"admiration,approval,confusion,curiosity,realization,surprise,neutral",admiration,False,,,,
-0:18アインマイケルとカマキリかっけぇ,@清きベジータさん,2,ja,positive,0.588,"approval,realization,neutral",approval,False,,,,
-besto opening,@jaimequispe2774,4,af,positive,0.906,"admiration,approval,excitement",admiration,False,,,,
-曲めちゃカッコイイし1:10の後ろ立ち姿マジ惚れるわ。,@kona9468,8,ja,negative,0.596,"admiration,approval,excitement,joy,love,neutral",admiration,False,,,,
-CMの刃牙のピクチャーズ！！！も好き,@山本アーセン公式,1,ja,positive,0.936,"admiration,approval,excitement,joy,love",admiration,False,,,,
-1:04ここら辺の刃牙可愛くてめちゃくちゃ好き。ぶっ飛んだキャラの刃牙がありえないと手を振っているのがたまらない。,@ナンディースカコレ,19,ja,positive,0.868,"admiration,amusement,approval,excitement,joy,love",admiration,False,,,,
-0:42 When I tell my crush I like her,@CHAJ96,3,en,positive,0.573,"admiration,approval,excitement,joy,love,neutral",admiration,False,,,,
-I gotta wait a lot for baki vs yugiro to become animated,@pramodpatil7836,1,en,positive,0.764,"approval,curiosity,desire,excitement,joy,optimism,surprise,neutral",approval,False,,,,
-Animen ESPIRITU DE LUCHA / HAJIME NO IPPO !,@ElJohnny98,1,de,positive,0.533,neutral,neutral,False,,,,
-最初の辺りジョジョ4部感あるの好き,@izumi_3264,2,ja,positive,0.962,"admiration,approval,excitement,joy,love",admiration,False,,,,
-I'd say this song slaps... But only little girls slap.,@Jarr-04,1,en,negative,0.506,"anger,annoyance,disappointment,disapproval,disgust,neutral",anger,True,I'd say this song slaps... But,negative,only little girls slap.,positive
-1:04 ヾﾉ・ω・),@GOAnaconda,3,ja,positive,0.548,"approval,realization,neutral",approval,False,,,,
-"⠀⠀⠘⡀ HOG RIDAAAAAA ⠀⠀ ⠀⠀⠀  ⡜⠀⠀⠀ ⠀⠀
-⠀  ⠑⡀⠀ ⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠀⡔⠁⠀⠀⠀ 
-⠀⠀⠀⠀⠈⠢⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠴⠊⠀⠀
-⠀⠀⠀ ⠀⠀⠀⢸⠀⠀⠀⢀⣀⣀⣀⣀⣀⡀⠤⠄⠒⠈⠀⠀⠀⠀⠀⠀⠀⠀ 
-⠀⠀⠀⠀⠀⠀⠀⠘⣀⠄⠊⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠉⢈⠩⢙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿ 
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢋⠠⠀⠀⠨⠐⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿ 
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⢐⠐⠌⡌⢄⢐⢈⠔⡝⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿ 
-⣿⣿⣿⣿⣿⣿⣿⡏⠉⡀⠐⡀⢁⠈⠐⠱⠑⡑⠈⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿ 
-⣿⣿⣿⣿⣿⣿⣿⢗⠀⠀⠐⡠⡛⠔⡁⢜⡔⡬⢎⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿ 
-⣿⣿⣿⣿⣿⣿⡿⠡⠀⠀⠀⠀⠂⠁⠀⠄⢂⠈⠂⢂⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿ 
-⣿⣿⣿⡿⢟⠩⠐⡀⠀⠀⠀⠐⠐⠁⠓⠒⠒⢀⠁⢐⢝⢟⢿⣿⣿⣿⣿⣿⣿⣿⣿ 
-⣿⣿⠫⠡⠡⠨⢀⠂⠠⠀⠀⢁⠑⡱⠛⠗⡓⢂⠠⢸⢸⢨⠣⡝⣻⣿⣿⣿⣿⣿⣿ 
-⣿⢏⢐⢁⠊⢌⠐⡈⠄⠠⠀⠀⠀⠀⠁⠑⠈⠀⢄⢕⠸⡨⠪⡪⡘⣻⣿⡿⣿⣿⣿ 
-⣿⢂⠂⡂⠅⡂⠅⡐⠨⢐⠐⠠⠠⡀⢄⠠⡠⡡⡱⡐⠕⢌⢊⢆⢣⢒⠽⢿⣿⣿⣿ 
-⠣⢂⠂⠄⠡⠐⠐⠈⠌⡐⠨⡈⠢⠨⡂⢌⢂⠆⡪⠨⡊⠂⡂⠢⢡⣢⣣⡣⣍⢿⣿ 
-⠨⢂⢂⠁⡀⠀⠀⠁⠐⠈⠐⠈⢈⠈⠐⡀⠄⠁⠌⠈⠔⣄⡀⠠⡑⡂⠆⠢⢂⠑⠽ 
-⡨⠐⠀⠀⠀⢠⡎⡀⠀⠀⠄⠈⡀⠌⠐⠠⠈⠄⡁⠂⡀⡫⠑⣑⠀⢂⠌⠄⢕⠀⠨ 
-⠺⡪⠢⡀⠀⠞⢇⢂⠀⠂⡀⠠⠀⠄⠁⠌⠨⠀⢄⠢⡁⢂⢿⡟⡀⠀⠈⠈⡀⠂⣰ 
-⢀⢀⠀⠄⠀⠀⡐⠀⡈⠄⡐⠅⡊⠌⢌⠄⡕⡑⡁⢂⠂⢂⠸⣿⡄⠀⠈⣠⣴⣿⣿ 
-⢐⠔⠠⠀⠀⡐⠠⢈⠢⢑⠄⠑⢈⠊⡂⡱⢁⣂⢌⢔⢌⢄⠀⠹⢀⣺⡿⣟⢿⣿⣿ 
-⢀⠡⠁⠂⠐⠠⠈⠄⢈⠠⢈⢢⡣⣗⠕⠄⣕⢮⣞⣞⣗⣯⢯⡷⡴⣹⡪⣷⣿⣿⣿ 
-⠊⠄⠠⠠⠡⠈⠠⢐⠠⡊⡎⣗⢭⢐⠹⡹⣮⡳⡵⣳⣻⢾⣻⣽⣻⣺⣺⣽⣿⣿⣿ 
-⣨⣾⢐⠰⠐⠅⡂⡂⢕⢜⢜⢵⢹⢑⢔⠨⢘⠸⡹⡵⣯⣻⢽⣳⣻⣺⢞⡿⣿⣿⣿ 
-⣿⣿⡔⠠⢈⠐⠐⢠⢱⢸⢸⢸⢸⠰⡡⢘⢔⢕⠝⢮⣳⢽⢝⡾⡵⡯⣏⠯⣿⣿⣿ 
-⣿⣿⣗⢅⢢⠠⠡⠢⡱⡑⡕⡕⢅⠣⡊⢨⢪⡣⡣⡂⡬⡳⢽⢽⢽⢽⣞⣧⠙⣿⣿ 
-⡻⣿⡯⡪⠢⡡⠡⢑⢌⠪⡪⡊⠆⢌⠪⢐⢕⢱⢱⢱⢱⢱⢙⢮⡫⡟⣞⢮⣳⠙⣿ 
-⠊⣿⣯⠪⡊⠄⢅⠂⢂⠁⢇⢇⢃⠂⢕⠐⠌⡲⡰⡡⣇⠇⢇⢕⠪⠉⠂⠅⠂⡑⠹ 
-⣸⢿⣳⢱⠨⡐⡽⡿⡶⡾⡬⡢⢂⠅⡢⢡⣌⠐⠈⢎⢎⢎⢔⠠⠡⠠⠠⠡⡁⡂⠡ 
-⡯⡯⡇⢅⠕⠠⢱⢹⡙⢮⢹⠨⡂⡂⢇⠌⠮⡳⠅⡂⢕⠡⡑⠠⢁⢁⣡⣡⣢⣶⣿ 
-⣗⢽⢌⡢⡡⡡⡸⡢⡣⡣⡱⡑⠔⡈⢎⢆⢂⠂⠅⣢⡳⣽⡐⢅⢂⣊⣿⣿⣿⣿⣿ 
-⣯⢯⢷⢽⢮⢯⣺⣪⢞⡮⣳⢘⠔⢌⢜⣞⣖⣮⣻⢮⣯⢷⣿⣻⣿⣿⣿⣿⣿⣿⣿ 
-⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣾⣷⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿",@Frenguls,2,unknown,negative,0.428,"annoyance,curiosity,neutral",annoyance,False,,,,
-刃牙系初めて見たけど筋肉ってことしか理解できなかった,@鈴木亨弥,1,ja,negative,0.473,"approval,confusion,disappointment,disapproval,realization,surprise,neutral",approval,False,,,,
-"01:13
-こっから最高に好き",@match3385,4,ja,positive,0.949,"admiration,approval,excitement,joy,love",admiration,False,,,,
-What the hell was that AKIRA type shit?!,@sontheyonko8973,0,en,negative,0.823,"anger,annoyance,confusion,curiosity,disappointment,disapproval,disgust,surprise,neutral",anger,False,,,,
-Please get grand rodeo again on the next season qwq,@haniepiyochan3070,1,en,positive,0.438,"approval,caring,desire,excitement,joy,optimism,neutral",approval,False,,,,
-なんて歌ってんのか分からん,@もしもしまるまる,0,ja,positive,0.365,"confusion,curiosity,realization,surprise,neutral",confusion,False,,,,
-最後にタイトルロゴ出てくるシーン大好き,@maki2490,0,ja,positive,0.869,"admiration,approval,excitement,joy,love",admiration,False,,,,
-格好いいのに　相変わらず何言ってるかさっぱりわからんｗ,@m_incf.m.o.w9327,30,ja,positive,0.447,"admiration,approval,realization,neutral",admiration,False,,,,
-"Me: *fall down the stairs*
-My mom:GOD! I'LL CALL AN AMBULANCE! 
-My dad: 0:41",@engel1816,2,en,positive,0.529,"anger,annoyance,approval,caring,sadness,neutral",anger,False,,,,
-Melhor abertura!!!!!! 😍😍😍😍😍,@Antoniocarlos-tf2hb,1,pt,positive,0.951,"admiration,approval,excitement,gratitude,joy,love",admiration,False,,,,
-1:05 ここすき,@110wnwno,2,ja,positive,0.568,"approval,realization,neutral",approval,False,,,,
-1:04ここ好きw,@yaminoma,6,ja,positive,0.864,"admiration,approval,excitement,joy,love",admiration,False,,,,
-by far my favorite baki opening,@cartonflesh9961,1,no,positive,0.802,"admiration,approval,excitement,joy,love",admiration,False,,,,
-刃牙のOPの中でこれが一番好きだわ…,@LETSGO-v7g,184,ja,positive,0.881,"admiration,approval,excitement,joy,love",admiration,False,,,,
-It sounds like he’s speaking Japanese with a southern accent,@jaegerjohnson5822,0,en,positive,0.404,"approval,realization,neutral",approval,False,,,,
-"as a strong man said  
-Beautiful",@yosokakok1367,0,tl,positive,0.959,"admiration,approval",admiration,False,,,,
-全12話分のopをスキップしないくらいには好き,@kimura2095,7,ja,positive,0.881,"admiration,approval,excitement,joy,love",admiration,False,,,,
-Sounds like a jojo opening,@tenacity2633,1,no,positive,0.626,"approval,realization,neutral",approval,False,,,,
-"｢オイオイオイ｣
-｢売れるわコイツ｣
-｢ほぅ刃牙の新OPですか…たいしたものですね
- GRANRODEOさんの歌声はアドレナリンの効率が  きわめて高いらしく試合直前に愛聴するグラップラーもいるくらいです｣
-｢なんでもいいけどよぉ｣
-｢主役はあのゲバル先輩だぜ｣
-｢それに特大のゲバルを前面に押し出したMV
- これも速効性の興奮剤です しかもオリバと刃牙もそろえてファンサもいい
-それにしても主要キャラ3人だというのにあれだけ神曲に出来るのは超人的な才能というほかない｣
-｢(売り上げ)よし…と｣",@user.haui24,29,ja,positive,0.761,"admiration,approval,curiosity,neutral",admiration,False,,,,
-"憧れた存在がいつしか目標に変わる
-
-かっこいい！！",@TS-jg1bg,6,ja,positive,0.815,"admiration,approval,excitement,joy,love",admiration,False,,,,
-Me gusto 100 veces mas que el manga y el op de la primera.,@Popotato7777,2,es,positive,0.639,"admiration,approval,excitement,joy,love",admiration,False,,,,
-"1:06
-ここ「日めくりめちゃカレンダー」って聞こえるんですが、本当はなんでしょう。
-頭の中で曲流すと、いつもここで20キロの重りのついた日めくりカレンダーをめくるマッチョのイメージが頭に流れちゃって困ってます。",@Wowどすこいピスターチオ,3,ja,positive,0.401,"annoyance,confusion,curiosity,disappointment,disapproval,realization,sadness,surprise,neutral",annoyance,False,,,,
-Bro Baki openings literally makes you wanna Wrestle a Bear man hahahah,@shadowsith4656,2,en,positive,0.575,"amusement,excitement,joy,neutral",amusement,False,,,,
-1:11 触れてる人見ないけどここの刃牙の立ち姿マジでかっこいい。The 漢って感じで好き過ぎる。,@ニートたけし-j6q,160,ja,positive,0.603,"admiration,approval,joy,love",admiration,False,,,,
-The drop at 0:59 is just beautiful,@jotarokujo7609,1,en,positive,0.909,"admiration,approval,love",admiration,False,,,,
-このopのせいで刃牙にハマった,@yukurom190,2,ja,negative,0.519,"annoyance,realization,neutral",annoyance,False,,,,
-"最終章に相応しい神opッッッ
-ドンッと出てくるタイトルロゴがカッコいいッッッ",@異様に性格が悪いラージャン,1,ja,positive,0.646,"admiration,approval,excitement",admiration,False,,,,
-0:45 Best part😁👍,@Ironman31389,3,fr,positive,0.876,"admiration,approval,excitement,gratitude,joy",admiration,False,,,,
-kinda miss the 3d,@DiamondsAreForeverLOLcheeseBUR,0,en,positive,0.406,"annoyance,disappointment,disapproval,realization,sadness,neutral",annoyance,False,,,,
-"刃牙風に感想言うと
-「おっっっもれ〜〜〜〜〜！！！！！！」",@明治デ部,0,ja,positive,0.789,"amusement,excitement,joy,neutral",amusement,False,,,,
-"「Treasure Pleasure」by GRANRODEO Lyrics
-
-Akogareteta sonzai dakedo itsu shika mokuhyou ni kawatteta
-RIVAL mokuzen yannai to ikenai
-EVERYBODY FIGHT IT NOW, OH YEAH
-Yappari ikigai wa chousen CHALLENGE da shi
-Doko made ittemo hate wa nashi
-Ue ni wa ue ore ga saijou ni narya ii
-Hatasaresou ni nai?
-
-Kantan na wake nante nai mirya wakan darou
-Miorosarete kao ni PISS kakeraretatte
-Waratte yaru no sa
-
-Tatakattereba PLEASURE sore ga TREASURE
-Arigatai ne
-Hima koitecha CALENDAR, FIGHTING CALENDAR
-Mekuri tsuzuketai
-Ooh-ooh ooh-ooh... ooh-ooh ooh-ooh ooh-ooh...
-LET'S GO! ADRENALINE!
-Ato kara ato kara fukideru ze
-KNOCKDOWN!",@straizo7985,0,sw,negative,0.715,"confusion,curiosity,neutral",confusion,False,,,,
-"作詞：谷山紀章 作曲：飯塚昌明
-
-憧れてた存在だけど
-いつしか目標に変わってた
-ライバル目前 やんないといけない
-Everybody fight it now, oh yeah
-
-やっぱり生き甲斐は挑戦チャレンジだし
-どこまで行っても果てはナシ
-上には上 俺が最上になりゃいい
-果たされそうにない?
-
-簡単な訳なんてない
-見りゃ分かんだろ
-見下ろされて顔に piss かけられたって
-笑ってやるのさ
-
-戦ってればプレジャー
-それがトレジャー (yeh!)
-ありがたいね
-ヒマこいてちゃ枯れんだ
-ファイティングカレンダー (yeh!)
-めくり続けたい
-Uh… uh…
-Let's go! (yeh!)
-アドレナリン
-あとからあとから噴き出るぜ
-Knock down",@user-le7jk9kf5m,9,ja,negative,0.65,"amusement,approval,disapproval,joy,optimism,realization,neutral",amusement,False,,,,
-Joder que temon!,@legendlol2331,1,es,negative,0.54,"anger,annoyance,disappointment,disgust,fear,nervousness,neutral",anger,False,,,,
-イントロにジョジョ感を感じるのは俺だけ？笑,@proteinlets3878,1,ja,positive,0.561,"amusement,confusion,curiosity,excitement,joy",amusement,False,,,,
-"I've seen something good, but this is one of the best of best",@awesomenurmzamri5789,0,en,positive,0.946,"admiration,approval,excitement,gratitude,joy,optimism,realization,relief",admiration,False,,,,
-0:50 この構えすこ,@名前を言ってはいけないあの-s3o,10,ja,positive,0.582,"approval,caring,optimism,realization,neutral",approval,False,,,,
-1:04 The most conventional meme stock,@kemalrachmat3342,1,en,positive,0.56,"approval,realization,neutral",approval,False,,,,
-Está bueno : ),@mateomoreno8579,0,es,positive,0.965,"admiration,approval",admiration,False,,,,
-Best op in baki!,@Dark_Ero,0,nl,positive,0.926,"admiration,approval,excitement,joy",admiration,False,,,,
-0:44 is what you looking for,@SonGoku-zr6eg,1,en,positive,0.45,"approval,realization,neutral",approval,False,,,,
-セカンのとこかっこよすぎる,@バラバラの薔薇-v5p,2,ja,positive,0.681,"admiration,anger,annoyance,disapproval,disgust,neutral",admiration,False,,,,
-飛ばせないOP,@スーパーもち,2,ja,negative,0.45,"annoyance,neutral",annoyance,False,,,,
-The fact that they added che guevara makes it even better,@enricopuccibutirrelevant3416,2,en,positive,0.674,"admiration,approval,realization,neutral",admiration,False,,,,
-1.08 is part  epik,@veronicaverniscevallos1518,0,nl,positive,0.398,"approval,realization,neutral",approval,False,,,,
-"1:11 I'm not 100% sure who that is, but kinda looks like Ohma Tokita hahaha",@francisco65372,0,en,neutral,0.479,"amusement,confusion,curiosity,disapproval,joy,realization,neutral",amusement,True,"1:11 I'm not 100% sure who that is, but",neutral,kinda looks like Ohma Tokita hahaha,positive
-waiting the osu beatmap,@EsLoQueHayEnt,0,en,positive,0.43,"approval,realization,neutral",approval,False,,,,
-Épico,@Krai-i8r,0,pt,positive,0.663,"admiration,approval,excitement,surprise,neutral",admiration,False,,,,
-Yo oliva wtf are u doing,@hypolitecindy1337,0,en,positive,0.453,"anger,annoyance,disapproval,disgust,neutral",anger,False,,,,
-久しぶりにアニメのオープニング神曲に出会った,@よーすけ-s6f,18,ja,positive,0.782,"admiration,approval,excitement,joy,realization,surprise,neutral",admiration,False,,,,
-Great song! Gets you hyped and ready to go!,@TheLaGangjShow,1,en,positive,0.955,"admiration,approval,excitement,gratitude,joy,love",admiration,False,,,,
-When I first saw this I thought Olivia was actually some kind of monster,@alka6432,0,en,negative,0.576,"annoyance,approval,disappointment,disapproval,disgust,fear,realization,surprise,neutral",annoyance,False,,,,
-Baki is standing for the flag .🕴🇺🇸,@Ksa_jh,1,en,positive,0.538,"approval,neutral",approval,False,,,,
-Hi I just want to say this is a masterpiece and I would wish for you to choose GR until the end as opening performers I can't wait for a mindblowing one for yujiro vs baki,@haniepiyochan3070,2,en,positive,0.56,"admiration,approval,curiosity,desire,excitement,joy,love,optimism",admiration,False,,,,
+Knock down",@brag_locket9372,2,2022-09-21T10:20:53Z,id,neutral,0.39,"annoyance,confusion,curiosity,neutral",annoyance,False,,,,,2022-09-21,neutral
+マウスの表情がそれぞれ違うところ好き。,@梟ヶ谷鬼丸,1,2022-08-06T19:27:04Z,ja,positive,0.772,"admiration,approval,excitement,joy,love,neutral",admiration,False,,,,,2022-08-06,positive
