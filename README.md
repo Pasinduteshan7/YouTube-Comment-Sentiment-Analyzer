@@ -2,7 +2,7 @@
 
 A high-performance, full-stack application that goes far beyond simple sentiment analysis. It performs deep psychological profiling, abuse detection, and time-series analysis of YouTube comments using an ensemble of custom AI models, providing actionable, data-driven insights for content creators.
 
-![Dashboard Preview](./dashboard-preview.jpg) *(Note: Ensure you run the dashboard locally to see the stunning dark-mode UI!)*
+![Dashboard Preview](./dashboard-preview.jpg) *( you run the dashboard locally to see the stunning dark-mode UI!)*
 
 ---
 
